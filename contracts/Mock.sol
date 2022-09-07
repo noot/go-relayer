@@ -8,6 +8,8 @@ contract Mock is ERC2771Context {
 
 	receive() external payable {}
 
+	// todo: express fee as a percentage, instead of an eth value?
+	// would require more math on the solidity side
 	function withdraw(uint256 value, uint256 fee) external {
 		require(fee < value, "fee is higher than value");
 		payable(msg.sender).transfer(fee);
