@@ -30,3 +30,5 @@ func NewClient(cfg *Config) (*Client, error) {
 		txOpts: txOpts,
 	}, nil
 }
+
+func (c *Client) SubmitTransaction() {}
