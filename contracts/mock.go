@@ -30,8 +30,8 @@ var (
 
 // MockMetaData contains all meta data concerning the Mock contract.
 var MockMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"trustedForwarder\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forwarder\",\"type\":\"address\"}],\"name\":\"isTrustedForwarder\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]",
-	Bin: "0x60a060405234801561001057600080fd5b50604051610582380380610582833981810160405281019061003291906100d1565b808073ffffffffffffffffffffffffffffffffffffffff1660808173ffffffffffffffffffffffffffffffffffffffff168152505050506100fe565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b600061009e82610073565b9050919050565b6100ae81610093565b81146100b957600080fd5b50565b6000815190506100cb816100a5565b92915050565b6000602082840312156100e7576100e661006e565b5b60006100f5848285016100bc565b91505092915050565b608051610469610119600039600061018901526104696000f3fe60806040526004361061002d5760003560e01c8063441a3e7014610039578063572b6c051461006257610034565b3661003457005b600080fd5b34801561004557600080fd5b50610060600480360381019061005b9190610252565b61009f565b005b34801561006e57600080fd5b50610089600480360381019061008491906102f0565b610185565b6040516100969190610338565b60405180910390f35b8181106100e1576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100d8906103b0565b60405180910390fd5b3373ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f19350505050158015610127573d6000803e3d6000fd5b506101306101dd565b73ffffffffffffffffffffffffffffffffffffffff166108fc828461015591906103ff565b9081150290604051600060405180830381858888f19350505050158015610180573d6000803e3d6000fd5b505050565b60007f000000000000000000000000000000000000000000000000000000000000000073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16149050919050565b60006101e833610185565b156101fc57601436033560601c905061020b565b61020461020f565b905061020c565b5b90565b600033905090565b600080fd5b6000819050919050565b61022f8161021c565b811461023a57600080fd5b50565b60008135905061024c81610226565b92915050565b6000806040838503121561026957610268610217565b5b60006102778582860161023d565b92505060206102888582860161023d565b9150509250929050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006102bd82610292565b9050919050565b6102cd816102b2565b81146102d857600080fd5b50565b6000813590506102ea816102c4565b92915050565b60006020828403121561030657610305610217565b5b6000610314848285016102db565b91505092915050565b60008115159050919050565b6103328161031d565b82525050565b600060208201905061034d6000830184610329565b92915050565b600082825260208201905092915050565b7f66656520697320686967686572207468616e2076616c75650000000000000000600082015250565b600061039a601883610353565b91506103a582610364565b602082019050919050565b600060208201905081810360008301526103c98161038d565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b600061040a8261021c565b91506104158361021c565b925082820390508181111561042d5761042c6103d0565b5b9291505056fea2646970667358221220a8e962db8651de1687cbdd2f5eb467c4919375979e4336806f38a72004d550e164736f6c63430008100033",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"trustedForwarder\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"FallbackCalled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"stateMutability\":\"nonpayable\",\"type\":\"fallback\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forwarder\",\"type\":\"address\"}],\"name\":\"isTrustedForwarder\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]",
+	Bin: "0x60a060405234801561001057600080fd5b5060405161073e38038061073e833981810160405281019061003291906100d1565b808073ffffffffffffffffffffffffffffffffffffffff1660808173ffffffffffffffffffffffffffffffffffffffff168152505050506100fe565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b600061009e82610073565b9050919050565b6100ae81610093565b81146100b957600080fd5b50565b6000815190506100cb816100a5565b92915050565b6000602082840312156100e7576100e661006e565b5b60006100f5848285016100bc565b91505092915050565b608051610625610119600039600061025001526106256000f3fe60806040526004361061002d5760003560e01c8063441a3e701461006f578063572b6c051461009857610034565b3661003457005b34801561004057600080fd5b507ff5c8b1061e6c4978efeae4105f6f09578e04098b17e6aeb3fde64b1be4989b1760405160405180910390a1005b34801561007b57600080fd5b5061009660048036038101906100919190610319565b6100d5565b005b3480156100a457600080fd5b506100bf60048036038101906100ba91906103b7565b61024c565b6040516100cc91906103ff565b60405180910390f35b814711610117576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161010e9061049d565b60405180910390fd5b818110610159576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161015090610509565b60405180910390fd5b3273ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f1935050505015801561019f573d6000803e3d6000fd5b506101a86102a4565b73ffffffffffffffffffffffffffffffffffffffff166108fc82846101cd9190610558565b9081150290604051600060405180830381858888f193505050501580156101f8573d6000803e3d6000fd5b507ff341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb5676102226102a4565b32838561022f9190610558565b8460405161024094939291906105aa565b60405180910390a15050565b60007f000000000000000000000000000000000000000000000000000000000000000073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16149050919050565b60006102af3361024c565b156102c357601436033560601c90506102d2565b6102cb6102d6565b90506102d3565b5b90565b600033905090565b600080fd5b6000819050919050565b6102f6816102e3565b811461030157600080fd5b50565b600081359050610313816102ed565b92915050565b600080604083850312156103305761032f6102de565b5b600061033e85828601610304565b925050602061034f85828601610304565b9150509250929050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b600061038482610359565b9050919050565b61039481610379565b811461039f57600080fd5b50565b6000813590506103b18161038b565b92915050565b6000602082840312156103cd576103cc6102de565b5b60006103db848285016103a2565b91505092915050565b60008115159050919050565b6103f9816103e4565b82525050565b600060208201905061041460008301846103f0565b92915050565b600082825260208201905092915050565b7f76616c756520746f207472616e7366657220697320686967686572207468616e60008201527f20636f6e74726163742062616c616e6365000000000000000000000000000000602082015250565b600061048760318361041a565b91506104928261042b565b604082019050919050565b600060208201905081810360008301526104b68161047a565b9050919050565b7f66656520697320686967686572207468616e2076616c75650000000000000000600082015250565b60006104f360188361041a565b91506104fe826104bd565b602082019050919050565b60006020820190508181036000830152610522816104e6565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b6000610563826102e3565b915061056e836102e3565b925082820390508181111561058657610585610529565b5b92915050565b61059581610379565b82525050565b6105a4816102e3565b82525050565b60006080820190506105bf600083018761058c565b6105cc602083018661058c565b6105d9604083018561059b565b6105e6606083018461059b565b9594505050505056fea2646970667358221220cf0749a7b7b2ad1e11259682ebd882542b22e65bca52c2f363df73cf1f595b6364736f6c63430008100033",
 }
 
 // MockABI is the input ABI used to generate the binding from.
@@ -253,6 +253,27 @@ func (_Mock *MockTransactorSession) Withdraw(value *big.Int, fee *big.Int) (*typ
 	return _Mock.Contract.Withdraw(&_Mock.TransactOpts, value, fee)
 }
 
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() returns()
+func (_Mock *MockTransactor) Fallback(opts *bind.TransactOpts, calldata []byte) (*types.Transaction, error) {
+	return _Mock.contract.RawTransact(opts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() returns()
+func (_Mock *MockSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _Mock.Contract.Fallback(&_Mock.TransactOpts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() returns()
+func (_Mock *MockTransactorSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _Mock.Contract.Fallback(&_Mock.TransactOpts, calldata)
+}
+
 // Receive is a paid mutator transaction binding the contract receive function.
 //
 // Solidity: receive() payable returns()
@@ -272,4 +293,274 @@ func (_Mock *MockSession) Receive() (*types.Transaction, error) {
 // Solidity: receive() payable returns()
 func (_Mock *MockTransactorSession) Receive() (*types.Transaction, error) {
 	return _Mock.Contract.Receive(&_Mock.TransactOpts)
+}
+
+// MockFallbackCalledIterator is returned from FilterFallbackCalled and is used to iterate over the raw logs and unpacked data for FallbackCalled events raised by the Mock contract.
+type MockFallbackCalledIterator struct {
+	Event *MockFallbackCalled // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *MockFallbackCalledIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(MockFallbackCalled)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(MockFallbackCalled)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *MockFallbackCalledIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *MockFallbackCalledIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// MockFallbackCalled represents a FallbackCalled event raised by the Mock contract.
+type MockFallbackCalled struct {
+	Raw types.Log // Blockchain specific contextual infos
+}
+
+// FilterFallbackCalled is a free log retrieval operation binding the contract event 0xf5c8b1061e6c4978efeae4105f6f09578e04098b17e6aeb3fde64b1be4989b17.
+//
+// Solidity: event FallbackCalled()
+func (_Mock *MockFilterer) FilterFallbackCalled(opts *bind.FilterOpts) (*MockFallbackCalledIterator, error) {
+
+	logs, sub, err := _Mock.contract.FilterLogs(opts, "FallbackCalled")
+	if err != nil {
+		return nil, err
+	}
+	return &MockFallbackCalledIterator{contract: _Mock.contract, event: "FallbackCalled", logs: logs, sub: sub}, nil
+}
+
+// WatchFallbackCalled is a free log subscription operation binding the contract event 0xf5c8b1061e6c4978efeae4105f6f09578e04098b17e6aeb3fde64b1be4989b17.
+//
+// Solidity: event FallbackCalled()
+func (_Mock *MockFilterer) WatchFallbackCalled(opts *bind.WatchOpts, sink chan<- *MockFallbackCalled) (event.Subscription, error) {
+
+	logs, sub, err := _Mock.contract.WatchLogs(opts, "FallbackCalled")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(MockFallbackCalled)
+				if err := _Mock.contract.UnpackLog(event, "FallbackCalled", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseFallbackCalled is a log parse operation binding the contract event 0xf5c8b1061e6c4978efeae4105f6f09578e04098b17e6aeb3fde64b1be4989b17.
+//
+// Solidity: event FallbackCalled()
+func (_Mock *MockFilterer) ParseFallbackCalled(log types.Log) (*MockFallbackCalled, error) {
+	event := new(MockFallbackCalled)
+	if err := _Mock.contract.UnpackLog(event, "FallbackCalled", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// MockWithdrawIterator is returned from FilterWithdraw and is used to iterate over the raw logs and unpacked data for Withdraw events raised by the Mock contract.
+type MockWithdrawIterator struct {
+	Event *MockWithdraw // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *MockWithdrawIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(MockWithdraw)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(MockWithdraw)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *MockWithdrawIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *MockWithdrawIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// MockWithdraw represents a Withdraw event raised by the Mock contract.
+type MockWithdraw struct {
+	Recipient common.Address
+	Relayer   common.Address
+	Value     *big.Int
+	Fee       *big.Int
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterWithdraw is a free log retrieval operation binding the contract event 0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567.
+//
+// Solidity: event Withdraw(address recipient, address relayer, uint256 value, uint256 fee)
+func (_Mock *MockFilterer) FilterWithdraw(opts *bind.FilterOpts) (*MockWithdrawIterator, error) {
+
+	logs, sub, err := _Mock.contract.FilterLogs(opts, "Withdraw")
+	if err != nil {
+		return nil, err
+	}
+	return &MockWithdrawIterator{contract: _Mock.contract, event: "Withdraw", logs: logs, sub: sub}, nil
+}
+
+// WatchWithdraw is a free log subscription operation binding the contract event 0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567.
+//
+// Solidity: event Withdraw(address recipient, address relayer, uint256 value, uint256 fee)
+func (_Mock *MockFilterer) WatchWithdraw(opts *bind.WatchOpts, sink chan<- *MockWithdraw) (event.Subscription, error) {
+
+	logs, sub, err := _Mock.contract.WatchLogs(opts, "Withdraw")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(MockWithdraw)
+				if err := _Mock.contract.UnpackLog(event, "Withdraw", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseWithdraw is a log parse operation binding the contract event 0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567.
+//
+// Solidity: event Withdraw(address recipient, address relayer, uint256 value, uint256 fee)
+func (_Mock *MockFilterer) ParseWithdraw(log types.Log) (*MockWithdraw, error) {
+	event := new(MockWithdraw)
+	if err := _Mock.contract.UnpackLog(event, "Withdraw", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }

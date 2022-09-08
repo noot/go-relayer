@@ -12,7 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/require"
 
-	"github.com/athanorlabs/atomic-swap/common"
+	"github.com/AthanorLabs/go-relayer/common"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"
 )
 
@@ -53,11 +53,11 @@ func TestForwarder_Verify(t *testing.T) {
 	require.NoError(t, err)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
-	key := NewKeyFromPrivateKey(pk)
+	key := common.NewKeyFromPrivateKey(pk)
 
 	req := &MinimalForwarderForwardRequest{
 		From:  key.Address(),
-		To:    ethcommon.Address{2},
+		To:    ethcommon.Address{2}, // arbitrary
 		Value: big.NewInt(0),
 		Gas:   big.NewInt(7000000),
 		Nonce: big.NewInt(0),

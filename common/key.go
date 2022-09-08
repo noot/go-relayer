@@ -1,4 +1,4 @@
-package contracts
+package common
 
 import (
 	"crypto/ecdsa"

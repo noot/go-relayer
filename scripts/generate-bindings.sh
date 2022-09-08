@@ -10,8 +10,8 @@ if [[ -z "${SOLC_BIN}" ]]; then
 	SOLC_BIN=solc
 fi
 
-"${SOLC_BIN}" --abi contracts/Mock.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/Mock.sol -o contracts/bin/ --overwrite
+"${SOLC_BIN}" --abi contracts/contracts/Mock.sol -o contracts/abi/ --overwrite
+"${SOLC_BIN}" --bin contracts/contracts/Mock.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/Mock.abi \
@@ -20,8 +20,8 @@ fi
 	--type Mock \
 	--out contracts/mock.go
 
-"${SOLC_BIN}" --abi contracts/MinimalForwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/MinimalForwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_BIN}" --abi contracts/contracts/MinimalForwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_BIN}" --bin contracts/contracts/MinimalForwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/MinimalForwarder.abi \
