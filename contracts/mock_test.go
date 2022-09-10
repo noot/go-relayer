@@ -44,10 +44,12 @@ func TestMock_Execute(t *testing.T) {
 		big.NewInt(526456961),
 		nil,
 	)
+
 	transferTx, err = ethtypes.SignTx(transferTx, ethtypes.LatestSignerForChainID(chainID), pk)
+	require.NoError(t, err)
 	err = conn.SendTransaction(context.Background(), transferTx)
 	require.NoError(t, err)
-	receipt, err = block.WaitForReceipt(context.Background(), conn, transferTx.Hash())
+	_, err = block.WaitForReceipt(context.Background(), conn, transferTx.Hash())
 	require.NoError(t, err)
 
 	// generate ForwardRequest and sign it
@@ -90,21 +92,22 @@ func TestMock_Execute(t *testing.T) {
 		Context: context.Background(),
 	}
 
+	// verify sig beforehand
 	ok, err := contract.Verify(callOpts, *req, sig)
 	require.NoError(t, err)
 	require.True(t, ok)
 
+	// execute withdraw() via forwarder
 	tx, err = contract.Execute(auth, *req, sig)
 	require.NoError(t, err)
-	receipt, err = block.WaitForReceipt(context.Background(), conn, mockTx.Hash())
+	receipt, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
 	require.NoError(t, err)
 	t.Logf("gas cost to call Mock.withdraw() via MinimalForwarder.execute(): %d", receipt.GasUsed)
 	require.Equal(t, uint64(1), receipt.Status)
+	require.Equal(t, 1, len(receipt.Logs))
 
-	// TODO: is the transfer actually working??
-	// mockBalance, err := conn.BalanceAt(context.Background(), mockAddress, nil)
-	// require.NoError(t, err)
-	// require.Equal(t, big.NewInt(0), mockBalance)
-
-	t.Log(receipt.Logs)
+	// check that transfer worked
+	mockBalance, err := conn.BalanceAt(context.Background(), mockAddress, nil)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), mockBalance.Int64())
 }
