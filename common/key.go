@@ -72,3 +72,7 @@ func (k *Key) Sign(digest [32]byte) ([]byte, error) {
 func (k *Key) Address() ethcommon.Address {
 	return k.address
 }
+
+func (k *Key) PrivateKey() *ecdsa.PrivateKey {
+	return k.priv
+}
