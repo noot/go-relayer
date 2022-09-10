@@ -4,7 +4,6 @@
 
 Components:
 - `contracts`: functionality to call EIP2771 forwarder contracts
-- `ethclient`: interacts with the chain and submits txs
 - `rpc`: rpc server for an end-user to submit txs to
 
 ## Usage

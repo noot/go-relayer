@@ -9,5 +9,4 @@ test:
 	go test ./...
 
 build:
-	mkdir bin
 	cd cmd && go build -o ../bin/relayer 
