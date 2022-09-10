@@ -31,7 +31,7 @@ type Config struct {
 	Ctx       context.Context
 	Port      uint16
 	EthClient *ethclient.Client
-	Forwarder *contracts.MinimalForwarder
+	Forwarder *contracts.IForwarder
 	Key       *common.Key
 	ChainID   *big.Int
 }

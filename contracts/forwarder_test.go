@@ -55,7 +55,7 @@ func TestForwarder_Verify(t *testing.T) {
 
 	key := common.NewKeyFromPrivateKey(pk)
 
-	req := &MinimalForwarderForwardRequest{
+	req := &IForwarderForwardRequest{
 		From:  key.Address(),
 		To:    ethcommon.Address{2}, // arbitrary
 		Value: big.NewInt(0),
@@ -78,4 +78,16 @@ func TestForwarder_Verify(t *testing.T) {
 	ok, err := contract.Verify(callOpts, *req, sig)
 	require.NoError(t, err)
 	require.True(t, ok)
+}
+
+func TestForwarder_IsIForwarder(t *testing.T) {
+	auth, conn, _ := setupAuth(t)
+
+	address, tx, _, err := DeployMinimalForwarder(auth, conn)
+	require.NoError(t, err)
+	_, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
+	require.NoError(t, err)
+
+	_, err = NewIForwarder(address, conn)
+	require.NoError(t, err)
 }

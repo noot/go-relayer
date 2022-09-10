@@ -20,7 +20,7 @@ var (
 
 type RelayerService struct {
 	ec        *ethclient.Client
-	forwarder *contracts.MinimalForwarder // TODO: make this an interface
+	forwarder *contracts.IForwarder
 	callOpts  *bind.CallOpts
 	txOpts    *bind.TransactOpts
 }
@@ -28,7 +28,7 @@ type RelayerService struct {
 func NewRelayerService(
 	ctx context.Context,
 	ec *ethclient.Client,
-	forwarder *contracts.MinimalForwarder,
+	forwarder *contracts.IForwarder,
 	key *common.Key,
 	chainID *big.Int,
 ) (*RelayerService, error) {
@@ -65,7 +65,7 @@ type SubmitTransactionResponse struct {
 }
 
 func (s *RelayerService) SubmitTransaction(_ *http.Request, req *SubmitTransactionRequest, resp *SubmitTransactionResponse) error {
-	fwdReq := &contracts.MinimalForwarderForwardRequest{
+	fwdReq := &contracts.IForwarderForwardRequest{
 		From:  req.From,
 		To:    req.To,
 		Value: req.Value,

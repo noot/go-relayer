@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPLv3
 pragma solidity ^0.8.5;
 
-import "./ERC2771Context.sol";
+import "./external/ERC2771Context.sol";
 
 // Mock is a mocked contract that implements ERC2771 recipient functionality.
 contract Mock is ERC2771Context {

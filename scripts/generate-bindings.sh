@@ -20,8 +20,8 @@ fi
 	--type Mock \
 	--out contracts/mock.go
 
-"${SOLC_BIN}" --abi contracts/contracts/MinimalForwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/contracts/MinimalForwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_BIN}" --abi contracts/contracts/external/MinimalForwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_BIN}" --bin contracts/contracts/external/MinimalForwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/MinimalForwarder.abi \
@@ -29,3 +29,13 @@ fi
 	--pkg contracts \
 	--type MinimalForwarder \
 	--out contracts/forwarder.go
+
+"${SOLC_BIN}" --abi contracts/contracts/IForwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_BIN}" --bin contracts/contracts/IForwarder.sol -o contracts/bin/ --overwrite
+
+"${ABIGEN}" \
+	--abi contracts/abi/IForwarder.abi \
+	--bin contracts/bin/IForwarder.bin \
+	--pkg contracts \
+	--type IForwarder \
+	--out contracts/iforwarder.go

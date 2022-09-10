@@ -72,7 +72,7 @@ func TestMock_Execute(t *testing.T) {
 	params, err := args.Pack(value, fee)
 	require.NoError(t, err)
 
-	req := &MinimalForwarderForwardRequest{
+	req := &IForwarderForwardRequest{
 		From:  key.Address(),
 		To:    mockAddress,
 		Value: big.NewInt(0),
