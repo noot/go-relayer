@@ -39,7 +39,7 @@ func setupAuth(t *testing.T) (*bind.TransactOpts, *ethclient.Client, *ecdsa.Priv
 	return auth, ec, pk
 }
 
-func TestForwarder_Verify(t *testing.T) {
+func TestMinimalForwarder_Verify(t *testing.T) {
 	auth, conn, pk := setupAuth(t)
 	chainID, err := conn.ChainID(context.Background())
 	require.NoError(t, err)
@@ -55,7 +55,7 @@ func TestForwarder_Verify(t *testing.T) {
 
 	key := common.NewKeyFromPrivateKey(pk)
 
-	req := &IForwarderForwardRequest{
+	req := &IMinimalForwarderForwardRequest{
 		From:  key.Address(),
 		To:    ethcommon.Address{2}, // arbitrary
 		Value: big.NewInt(0),
@@ -80,7 +80,7 @@ func TestForwarder_Verify(t *testing.T) {
 	require.True(t, ok)
 }
 
-func TestForwarder_IsIForwarder(t *testing.T) {
+func TestMinimalForwarder_IsIMinimalForwarder(t *testing.T) {
 	auth, conn, _ := setupAuth(t)
 
 	address, tx, _, err := DeployMinimalForwarder(auth, conn)
@@ -88,6 +88,6 @@ func TestForwarder_IsIForwarder(t *testing.T) {
 	_, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
 	require.NoError(t, err)
 
-	_, err = NewIForwarder(address, conn)
+	_, err = NewIMinimalForwarder(address, conn)
 	require.NoError(t, err)
 }

@@ -28,14 +28,14 @@ fi
 	--bin contracts/bin/MinimalForwarder.bin \
 	--pkg contracts \
 	--type MinimalForwarder \
-	--out contracts/forwarder.go
+	--out contracts/minimal_forwarder.go
 
-"${SOLC_BIN}" --abi contracts/contracts/IForwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/contracts/IForwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_BIN}" --abi contracts/contracts/IMinimalForwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_BIN}" --bin contracts/contracts/IMinimalForwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
-	--abi contracts/abi/IForwarder.abi \
-	--bin contracts/bin/IForwarder.bin \
+	--abi contracts/abi/IMinimalForwarder.abi \
+	--bin contracts/bin/IMinimalForwarder.bin \
 	--pkg contracts \
-	--type IForwarder \
-	--out contracts/iforwarder.go
+	--type IMinimalForwarder \
+	--out contracts/i_minimal_forwarder.go

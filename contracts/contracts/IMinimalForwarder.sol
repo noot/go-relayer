@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 /**
  * @dev Forwarder interface based on OpenZeppelin's MinimalForwarder.
  */
-interface IForwarder {
+interface IMinimalForwarder {
     struct ForwardRequest {
         address from;
         address to;

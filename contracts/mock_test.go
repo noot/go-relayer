@@ -41,7 +41,7 @@ func TestMock_Execute(t *testing.T) {
 		mockAddress,
 		value,
 		100000,
-		big.NewInt(526456961),
+		big.NewInt(531099458),
 		nil,
 	)
 
@@ -72,7 +72,7 @@ func TestMock_Execute(t *testing.T) {
 	params, err := args.Pack(value, fee)
 	require.NoError(t, err)
 
-	req := &IForwarderForwardRequest{
+	req := &IMinimalForwarderForwardRequest{
 		From:  key.Address(),
 		To:    mockAddress,
 		Value: big.NewInt(0),

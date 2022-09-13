@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 
 import "./ECDSA.sol";
 import "./EIP712.sol";
-import "../IForwarder.sol";
+import "../IMinimalForwarder.sol";
 
 /**
  * @dev Simple minimal forwarder to be used together with an ERC2771 compatible contract. See {ERC2771Context}.
@@ -15,7 +15,7 @@ import "../IForwarder.sol";
  * functioning forwarding system with good properties requires more complexity. We suggest you look at other projects
  * such as the GSN which do have the goal of building a system like that.
  */
-contract MinimalForwarder is IForwarder, EIP712 {
+contract MinimalForwarder is IMinimalForwarder, EIP712 {
     using ECDSA for bytes32;
 
     bytes32 private constant _TYPEHASH =

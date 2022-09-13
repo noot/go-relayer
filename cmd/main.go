@@ -181,7 +181,12 @@ func run(c *cli.Context) error {
 	}
 }
 
-func deployOrGetForwarder(addressString string, ec *ethclient.Client, key *common.Key, chainID *big.Int) (*contracts.IForwarder, error) {
+func deployOrGetForwarder(
+	addressString string,
+	ec *ethclient.Client,
+	key *common.Key,
+	chainID *big.Int,
+) (*contracts.IMinimalForwarder, error) { // TODO: change to interface
 	txOpts, err := bind.NewKeyedTransactorWithChainID(key.PrivateKey(), chainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make transactor: %w", err)
@@ -198,7 +203,7 @@ func deployOrGetForwarder(addressString string, ec *ethclient.Client, key *commo
 			return nil, err
 		}
 
-		return contracts.NewIForwarder(address, ec)
+		return contracts.NewIMinimalForwarder(address, ec)
 	}
 
 	ok := ethcommon.IsHexAddress(addressString)
@@ -206,7 +211,7 @@ func deployOrGetForwarder(addressString string, ec *ethclient.Client, key *commo
 		return nil, errInvalidAddress
 	}
 
-	return contracts.NewIForwarder(ethcommon.HexToAddress(addressString), ec)
+	return contracts.NewIMinimalForwarder(ethcommon.HexToAddress(addressString), ec)
 }
 
 func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {

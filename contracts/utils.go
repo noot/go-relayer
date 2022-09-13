@@ -78,7 +78,8 @@ func getEIP712DomainSeparator(name, version []byte, chainID *big.Int, address et
 }
 
 // GetForwardRequestDigestToSign returns a 32-byte digest for signing
-func GetForwardRequestDigestToSign(req *IForwarderForwardRequest, chainID *big.Int,
+// TODO: make request an interface
+func GetForwardRequestDigestToSign(req *IMinimalForwarderForwardRequest, chainID *big.Int,
 	forwarderAddress ethcommon.Address) ([32]byte, error) {
 	domainSeparator, err := getEIP712DomainSeparator(
 		[]byte("MinimalForwarder"), // TODO: make configurable

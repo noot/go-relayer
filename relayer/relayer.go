@@ -22,7 +22,7 @@ var (
 type Relayer struct {
 	ctx       context.Context
 	ec        *ethclient.Client
-	forwarder *contracts.IForwarder
+	forwarder *contracts.IMinimalForwarder
 	callOpts  *bind.CallOpts
 	txOpts    *bind.TransactOpts
 }
@@ -31,7 +31,7 @@ type Relayer struct {
 type Config struct {
 	Ctx       context.Context
 	EthClient *ethclient.Client
-	Forwarder *contracts.IForwarder
+	Forwarder *contracts.IMinimalForwarder
 	Key       *common.Key
 	ChainID   *big.Int
 }
@@ -71,7 +71,7 @@ type SubmitTransactionResponse struct {
 }
 
 func (s *Relayer) SubmitTransaction(req *SubmitTransactionRequest) (*SubmitTransactionResponse, error) {
-	fwdReq := &contracts.IForwarderForwardRequest{
+	fwdReq := &contracts.IMinimalForwarderForwardRequest{
 		From:  req.From,
 		To:    req.To,
 		Value: req.Value,
