@@ -1,19 +1,14 @@
 package rpc
 
 import (
-	"context"
 	"fmt"
-	"math/big"
 	"net/http"
 
-	"github.com/AthanorLabs/go-relayer/common"
-	"github.com/AthanorLabs/go-relayer/contracts"
+	"github.com/AthanorLabs/go-relayer/relayer"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/rpc/v2"
-
-	"github.com/ethereum/go-ethereum/ethclient"
 
 	logging "github.com/ipfs/go-log"
 )
@@ -28,12 +23,8 @@ type Server struct {
 
 // Config ...
 type Config struct {
-	Ctx       context.Context
-	Port      uint16
-	EthClient *ethclient.Client
-	Forwarder *contracts.IForwarder
-	Key       *common.Key
-	ChainID   *big.Int
+	Port    uint16
+	Relayer *relayer.Relayer
 }
 
 // NewServer ...
@@ -41,7 +32,7 @@ func NewServer(cfg *Config) (*Server, error) {
 	s := rpc.NewServer()
 	s.RegisterCodec(NewCodec(), "application/json")
 
-	rs, err := NewRelayerService(cfg.Ctx, cfg.EthClient, cfg.Forwarder, cfg.Key, cfg.ChainID)
+	rs, err := NewRelayerService(cfg.Relayer)
 	if err != nil {
 		return nil, err
 	}

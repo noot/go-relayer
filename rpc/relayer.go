@@ -1,94 +1,31 @@
 package rpc
 
 import (
-	"context"
-	"errors"
-	"math/big"
 	"net/http"
 
-	"github.com/AthanorLabs/go-relayer/common"
-	"github.com/AthanorLabs/go-relayer/contracts"
-
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	ethcommon "github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
-)
-
-var (
-	errFailedToVerify = errors.New("failed to verify forward request signature")
+	"github.com/AthanorLabs/go-relayer/relayer"
 )
 
 type RelayerService struct {
-	ec        *ethclient.Client
-	forwarder *contracts.IForwarder
-	callOpts  *bind.CallOpts
-	txOpts    *bind.TransactOpts
+	r *relayer.Relayer
 }
 
-func NewRelayerService(
-	ctx context.Context,
-	ec *ethclient.Client,
-	forwarder *contracts.IForwarder,
-	key *common.Key,
-	chainID *big.Int,
-) (*RelayerService, error) {
-	callOpts := &bind.CallOpts{
-		From:    key.Address(),
-		Context: ctx,
-	}
-
-	txOpts, err := bind.NewKeyedTransactorWithChainID(key.PrivateKey(), chainID)
-	if err != nil {
-		return nil, err
-	}
-
+func NewRelayerService(r *relayer.Relayer) (*RelayerService, error) {
 	return &RelayerService{
-		ec:        ec,
-		forwarder: forwarder,
-		callOpts:  callOpts,
-		txOpts:    txOpts,
+		r: r,
 	}, nil
 }
 
-type SubmitTransactionRequest struct {
-	From      ethcommon.Address
-	To        ethcommon.Address
-	Value     *big.Int
-	Gas       *big.Int
-	Nonce     *big.Int
-	Data      []byte
-	Signature []byte
-}
-
-type SubmitTransactionResponse struct {
-	TxHash ethcommon.Hash `json:"transactionHash"`
-}
-
-func (s *RelayerService) SubmitTransaction(_ *http.Request, req *SubmitTransactionRequest, resp *SubmitTransactionResponse) error {
-	fwdReq := &contracts.IForwarderForwardRequest{
-		From:  req.From,
-		To:    req.To,
-		Value: req.Value,
-		Gas:   req.Gas,
-		Nonce: req.Nonce,
-		Data:  req.Data,
-	}
-
-	// verify sig beforehand
-	ok, err := s.forwarder.Verify(s.callOpts, *fwdReq, req.Signature)
-	if !ok {
-		return errFailedToVerify
-	}
-
+func (s *RelayerService) SubmitTransaction(
+	_ *http.Request,
+	req *relayer.SubmitTransactionRequest,
+	resp *relayer.SubmitTransactionResponse,
+) error {
+	rresp, err := s.r.SubmitTransaction(req)
 	if err != nil {
 		return err
 	}
 
-	tx, err := s.forwarder.Execute(s.txOpts, *fwdReq, req.Signature)
-	if err != nil {
-		return err
-	}
-
-	resp.TxHash = tx.Hash()
+	resp.TxHash = rresp.TxHash
 	return nil
 }

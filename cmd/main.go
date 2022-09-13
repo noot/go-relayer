@@ -13,6 +13,7 @@ import (
 
 	"github.com/AthanorLabs/go-relayer/common"
 	"github.com/AthanorLabs/go-relayer/contracts"
+	"github.com/AthanorLabs/go-relayer/relayer"
 	"github.com/AthanorLabs/go-relayer/rpc"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"
 
@@ -144,16 +145,25 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	cfg := &rpc.Config{
+	cfg := &relayer.Config{
 		Ctx:       context.Background(),
-		Port:      port,
 		EthClient: ec,
 		Forwarder: forwarder,
 		Key:       key,
 		ChainID:   chainID,
 	}
 
-	server, err := rpc.NewServer(cfg)
+	r, err := relayer.NewRelayer(cfg)
+	if err != nil {
+		return err
+	}
+
+	rpcCfg := &rpc.Config{
+		Port:    port,
+		Relayer: r,
+	}
+
+	server, err := rpc.NewServer(rpcCfg)
 	if err != nil {
 		return err
 	}
