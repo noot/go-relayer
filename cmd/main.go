@@ -145,16 +145,13 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	// TODO: the linter complains this is unused, figure out if it's actually unused
-	type T = contracts.IMinimalForwarderForwardRequest //nolint:unused
-
-	cfg := &relayer.Config[T]{
-		Ctx:                     context.Background(),
-		EthClient:               ec,
-		Forwarder:               forwarder,
-		Key:                     key,
-		ChainID:                 chainID,
-		NewForwarderRequestFunc: contracts.NewIMinimalForwarderForwardRequest,
+	cfg := &relayer.Config{
+		Ctx:                   context.Background(),
+		EthClient:             ec,
+		Forwarder:             contracts.NewIMinimalForwarderWrapped(forwarder),
+		Key:                   key,
+		ChainID:               chainID,
+		NewForwardRequestFunc: contracts.NewIMinimalForwarderForwardRequest,
 	}
 
 	r, err := relayer.NewRelayer(cfg)
@@ -162,7 +159,7 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	rpcCfg := &rpc.Config[T]{
+	rpcCfg := &rpc.Config{
 		Port:    port,
 		Relayer: r,
 	}

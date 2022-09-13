@@ -3,23 +3,24 @@ package rpc
 import (
 	"net/http"
 
+	"github.com/AthanorLabs/go-relayer/common"
 	"github.com/AthanorLabs/go-relayer/relayer"
 )
 
-type RelayerService[T any] struct {
-	r *relayer.Relayer[T]
+type RelayerService struct {
+	r *relayer.Relayer
 }
 
-func NewRelayerService[T any](r *relayer.Relayer[T]) (*RelayerService[T], error) {
-	return &RelayerService[T]{
+func NewRelayerService(r *relayer.Relayer) (*RelayerService, error) {
+	return &RelayerService{
 		r: r,
 	}, nil
 }
 
-func (s *RelayerService[T]) SubmitTransaction(
+func (s *RelayerService) SubmitTransaction(
 	_ *http.Request,
-	req *relayer.SubmitTransactionRequest,
-	resp *relayer.SubmitTransactionResponse,
+	req *common.SubmitTransactionRequest,
+	resp *common.SubmitTransactionResponse,
 ) error {
 	rresp, err := s.r.SubmitTransaction(req)
 	if err != nil {

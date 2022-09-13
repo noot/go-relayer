@@ -1,26 +1,23 @@
 package contracts
 
 import (
-	"math/big"
+	//"math/big"
 
-	ethcommon "github.com/ethereum/go-ethereum/common"
+	"github.com/AthanorLabs/go-relayer/common"
+	//ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
-func NewIMinimalForwarderForwardRequest(
-	from ethcommon.Address,
-	to ethcommon.Address,
-	value *big.Int,
-	gas *big.Int,
-	nonce *big.Int,
-	data []byte,
-	_ *big.Int,
-) IMinimalForwarderForwardRequest {
-	return IMinimalForwarderForwardRequest{
-		From:  from,
-		To:    to,
-		Value: value,
-		Gas:   gas,
-		Nonce: nonce,
-		Data:  data,
-	}
+func (r *IMinimalForwarderForwardRequest) FromSubmitTransactionRequest(
+	req *common.SubmitTransactionRequest,
+) {
+	r.From = req.From
+	r.To = req.To
+	r.Value = req.Value
+	r.Gas = req.Gas
+	r.Nonce = req.Nonce
+	r.Data = req.Data
+}
+
+func NewIMinimalForwarderForwardRequest() common.ForwardRequest {
+	return &IMinimalForwarderForwardRequest{}
 }

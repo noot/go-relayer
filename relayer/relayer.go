@@ -6,10 +6,8 @@ import (
 	"math/big"
 
 	"github.com/AthanorLabs/go-relayer/common"
-	//"github.com/AthanorLabs/go-relayer/contracts"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
@@ -17,30 +15,30 @@ var (
 	errFailedToVerify = errors.New("failed to verify forward request signature")
 )
 
-type NewForwarderRequestFunc[T any] func(ethcommon.Address, ethcommon.Address, *big.Int, *big.Int, *big.Int, []byte, *big.Int) T
+type NewForwardRequestFunc func() common.ForwardRequest
 
 // Relayer represents a transaction relayer.
 // It contains an Ethereum client and a private key, allowing it to forward transactions.
-type Relayer[T any] struct {
-	ctx                     context.Context
-	ec                      *ethclient.Client
-	forwarder               Forwarder[T]
-	callOpts                *bind.CallOpts
-	txOpts                  *bind.TransactOpts
-	newForwarderRequestFunc NewForwarderRequestFunc[T]
+type Relayer struct {
+	ctx                   context.Context
+	ec                    *ethclient.Client
+	forwarder             common.Forwarder
+	callOpts              *bind.CallOpts
+	txOpts                *bind.TransactOpts
+	newForwardRequestFunc NewForwardRequestFunc
 }
 
 // Config ...
-type Config[T any] struct {
-	Ctx                     context.Context
-	EthClient               *ethclient.Client
-	Forwarder               Forwarder[T]
-	Key                     *common.Key
-	ChainID                 *big.Int
-	NewForwarderRequestFunc NewForwarderRequestFunc[T]
+type Config struct {
+	Ctx                   context.Context
+	EthClient             *ethclient.Client
+	Forwarder             common.Forwarder
+	Key                   *common.Key
+	ChainID               *big.Int
+	NewForwardRequestFunc NewForwardRequestFunc
 }
 
-func NewRelayer[T any](cfg *Config[T]) (*Relayer[T], error) {
+func NewRelayer(cfg *Config) (*Relayer, error) {
 	callOpts := &bind.CallOpts{
 		From:    cfg.Key.Address(),
 		Context: cfg.Ctx,
@@ -51,34 +49,19 @@ func NewRelayer[T any](cfg *Config[T]) (*Relayer[T], error) {
 		return nil, err
 	}
 
-	return &Relayer[T]{
-		ctx:                     cfg.Ctx,
-		ec:                      cfg.EthClient,
-		forwarder:               cfg.Forwarder,
-		callOpts:                callOpts,
-		txOpts:                  txOpts,
-		newForwarderRequestFunc: cfg.NewForwarderRequestFunc,
+	return &Relayer{
+		ctx:                   cfg.Ctx,
+		ec:                    cfg.EthClient,
+		forwarder:             cfg.Forwarder,
+		callOpts:              callOpts,
+		txOpts:                txOpts,
+		newForwardRequestFunc: cfg.NewForwardRequestFunc,
 	}, nil
 }
 
-// TODO: get rid of this, make SubmitTransaction take T
-// actually, we might need this for RPC requests (json tags)
-type SubmitTransactionRequest struct {
-	From      ethcommon.Address
-	To        ethcommon.Address
-	Value     *big.Int
-	Gas       *big.Int
-	Nonce     *big.Int
-	Data      []byte
-	Signature []byte
-}
-
-type SubmitTransactionResponse struct {
-	TxHash ethcommon.Hash `json:"transactionHash"`
-}
-
-func (s *Relayer[T]) SubmitTransaction(req *SubmitTransactionRequest) (*SubmitTransactionResponse, error) {
-	fwdReq := s.newForwarderRequestFunc(req.From, req.To, req.Value, req.Gas, req.Nonce, req.Data, nil)
+func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) {
+	fwdReq := s.newForwardRequestFunc()
+	fwdReq.FromSubmitTransactionRequest(req)
 
 	// verify sig beforehand
 	ok, err := s.forwarder.Verify(s.callOpts, fwdReq, req.Signature)
@@ -95,7 +78,7 @@ func (s *Relayer[T]) SubmitTransaction(req *SubmitTransactionRequest) (*SubmitTr
 		return nil, err
 	}
 
-	return &SubmitTransactionResponse{
+	return &common.SubmitTransactionResponse{
 		TxHash: tx.Hash(),
 	}, nil
 }
