@@ -47,7 +47,7 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  flagForwarderAddress,
-			Value: "0x",
+			Value: "",
 			Usage: "Forwarder contract address",
 		},
 		&cli.StringFlag{
@@ -145,12 +145,16 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	cfg := &relayer.Config{
-		Ctx:       context.Background(),
-		EthClient: ec,
-		Forwarder: forwarder,
-		Key:       key,
-		ChainID:   chainID,
+	// TODO: the linter complains this is unused, figure out if it's actually unused
+	type T = contracts.IMinimalForwarderForwardRequest //nolint:unused
+
+	cfg := &relayer.Config[T]{
+		Ctx:                     context.Background(),
+		EthClient:               ec,
+		Forwarder:               forwarder,
+		Key:                     key,
+		ChainID:                 chainID,
+		NewForwarderRequestFunc: contracts.NewIMinimalForwarderForwardRequest,
 	}
 
 	r, err := relayer.NewRelayer(cfg)
@@ -158,7 +162,7 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	rpcCfg := &rpc.Config{
+	rpcCfg := &rpc.Config[T]{
 		Port:    port,
 		Relayer: r,
 	}

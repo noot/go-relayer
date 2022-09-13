@@ -22,13 +22,13 @@ type Server struct {
 }
 
 // Config ...
-type Config struct {
+type Config[T any] struct {
 	Port    uint16
-	Relayer *relayer.Relayer
+	Relayer *relayer.Relayer[T]
 }
 
 // NewServer ...
-func NewServer(cfg *Config) (*Server, error) {
+func NewServer[T any](cfg *Config[T]) (*Server, error) {
 	s := rpc.NewServer()
 	s.RegisterCodec(NewCodec(), "application/json")
 

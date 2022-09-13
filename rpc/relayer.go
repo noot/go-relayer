@@ -6,17 +6,17 @@ import (
 	"github.com/AthanorLabs/go-relayer/relayer"
 )
 
-type RelayerService struct {
-	r *relayer.Relayer
+type RelayerService[T any] struct {
+	r *relayer.Relayer[T]
 }
 
-func NewRelayerService(r *relayer.Relayer) (*RelayerService, error) {
-	return &RelayerService{
+func NewRelayerService[T any](r *relayer.Relayer[T]) (*RelayerService[T], error) {
+	return &RelayerService[T]{
 		r: r,
 	}, nil
 }
 
-func (s *RelayerService) SubmitTransaction(
+func (s *RelayerService[T]) SubmitTransaction(
 	_ *http.Request,
 	req *relayer.SubmitTransactionRequest,
 	resp *relayer.SubmitTransactionResponse,
