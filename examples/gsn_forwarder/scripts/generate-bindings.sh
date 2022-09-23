@@ -20,7 +20,7 @@ fi
 	--bin contracts/bin/Forwarder.bin \
 	--pkg ${PKG_NAME} \
 	--type Forwarder \
-	--out forwarder.go
+	--out tmp_forwarder.go
 
 "${SOLC_BIN}" --abi contracts/IForwarder.sol -o contracts/abi/ --overwrite
 "${SOLC_BIN}" --bin contracts/IForwarder.sol -o contracts/bin/ --overwrite
@@ -31,3 +31,6 @@ fi
 	--pkg ${PKG_NAME} \
 	--type IForwarder \
 	--out i_forwarder.go
+
+sed '31,41d' tmp_forwarder.go > forwarder.go
+rm tmp_forwarder.go

@@ -18,7 +18,7 @@ fi
 	--bin contracts/bin/MinimalForwarder.bin \
 	--pkg mforwarder \
 	--type MinimalForwarder \
-	--out minimal_forwarder.go
+	--out tmp_forwarder.go
 
 "${SOLC_BIN}" --abi contracts/IMinimalForwarder.sol -o contracts/abi/ --overwrite
 "${SOLC_BIN}" --bin contracts/IMinimalForwarder.sol -o contracts/bin/ --overwrite
@@ -29,3 +29,6 @@ fi
 	--pkg mforwarder \
 	--type IMinimalForwarder \
 	--out i_minimal_forwarder.go
+
+sed '31,40d' tmp_forwarder.go > minimal_forwarder.go
+rm tmp_forwarder.go
