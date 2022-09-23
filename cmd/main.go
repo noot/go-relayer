@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/AthanorLabs/go-relayer/common"
-	"github.com/AthanorLabs/go-relayer/contracts"
+	contracts "github.com/AthanorLabs/go-relayer/examples/minimal_forwarder"
 	"github.com/AthanorLabs/go-relayer/relayer"
 	"github.com/AthanorLabs/go-relayer/rpc"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"

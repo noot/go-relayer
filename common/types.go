@@ -31,4 +31,5 @@ type Forwarder interface {
 
 type ForwardRequest interface {
 	FromSubmitTransactionRequest(*SubmitTransactionRequest)
+	Pack() ([]byte, error)
 }

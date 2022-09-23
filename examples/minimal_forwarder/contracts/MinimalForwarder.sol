@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.0;
 
-import "./ECDSA.sol";
-import "./EIP712.sol";
-import "../IMinimalForwarder.sol";
+import "./external/ECDSA.sol";
+import "./external/EIP712.sol";
+import "./IMinimalForwarder.sol";
 
 /**
  * @dev Simple minimal forwarder to be used together with an ERC2771 compatible contract. See {ERC2771Context}.

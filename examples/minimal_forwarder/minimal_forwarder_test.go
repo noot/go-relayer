@@ -1,4 +1,4 @@
-package contracts
+package mforwarder
 
 import (
 	"context"
@@ -64,7 +64,7 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 		Data:  []byte{},
 	}
 
-	digest, err := GetForwardRequestDigestToSign(req, chainID, address)
+	digest, err := common.GetForwardRequestDigestToSign(req, chainID, address)
 	require.NoError(t, err)
 
 	sig, err := key.Sign(digest)
