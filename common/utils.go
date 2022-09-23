@@ -17,11 +17,16 @@ func GetFunctionSignature(fn string) []byte {
 }
 
 // GetForwardRequestDigestToSign returns a 32-byte digest for signing
-func GetForwardRequestDigestToSign(req ForwardRequest, chainID *big.Int,
-	forwarderAddress ethcommon.Address) ([32]byte, error) {
-	domainSeparator, err := getEIP712DomainSeparator(
-		[]byte("MinimalForwarder"), // TODO: make configurable
-		[]byte("0.0.1"),
+func GetForwardRequestDigestToSign(
+	req ForwardRequest,
+	name,
+	version string,
+	chainID *big.Int,
+	forwarderAddress ethcommon.Address,
+) ([32]byte, error) {
+	domainSeparator, err := GetEIP712DomainSeparator(
+		name,
+		version,
 		chainID,
 		forwarderAddress,
 	)
@@ -46,17 +51,9 @@ func GetForwardRequestDigestToSign(req ForwardRequest, chainID *big.Int,
 	return crypto.Keccak256Hash(digestPreimage), nil
 }
 
-func padBytesLeft(in []byte, n int) []byte {
-	if len(in) > n {
-		return in // error probably
-	}
-
-	out := make([]byte, n-len(in))
-	return append(out, in...)
-}
-
-// address = forwarder contract address
-func getEIP712DomainSeparator(name, version []byte, chainID *big.Int, address ethcommon.Address) ([32]byte, error) {
+// GetEIP712DomainSeparator ...
+// Note: address = forwarder contract address
+func GetEIP712DomainSeparator(name, version string, chainID *big.Int, address ethcommon.Address) ([32]byte, error) {
 	bytes32Ty, err := abi.NewType("bytes32", "", nil)
 	if err != nil {
 		return [32]byte{}, fmt.Errorf("failed to create bytes32 type: %w", err)
@@ -90,8 +87,8 @@ func getEIP712DomainSeparator(name, version []byte, chainID *big.Int, address et
 	}
 	domainSeparatorPreimage, err := args.Pack(
 		eip712DomainHash,
-		crypto.Keccak256Hash(name),
-		crypto.Keccak256Hash(version),
+		crypto.Keccak256Hash([]byte(name)),
+		crypto.Keccak256Hash([]byte(version)),
 		chainIDArr,
 		address,
 	)
@@ -100,4 +97,13 @@ func getEIP712DomainSeparator(name, version []byte, chainID *big.Int, address et
 	}
 
 	return crypto.Keccak256Hash(domainSeparatorPreimage), nil
+}
+
+func padBytesLeft(in []byte, n int) []byte {
+	if len(in) > n {
+		return in // error probably
+	}
+
+	out := make([]byte, n-len(in))
+	return append(out, in...)
 }

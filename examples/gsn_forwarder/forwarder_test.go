@@ -1,4 +1,4 @@
-package mforwarder
+package gsnforwarder
 
 import (
 	"context"
@@ -39,12 +39,12 @@ func setupAuth(t *testing.T) (*bind.TransactOpts, *ethclient.Client, *ecdsa.Priv
 	return auth, ec, pk
 }
 
-func TestMinimalForwarder_Verify(t *testing.T) {
+func TestForwarder_Verify(t *testing.T) {
 	auth, conn, pk := setupAuth(t)
 	chainID, err := conn.ChainID(context.Background())
 	require.NoError(t, err)
 
-	address, tx, contract, err := DeployMinimalForwarder(auth, conn)
+	address, tx, contract, err := DeployForwarder(auth, conn)
 	require.NoError(t, err)
 	require.NotEqual(t, ethcommon.Address{}, address)
 	require.NotNil(t, tx)
@@ -55,25 +55,31 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 
 	key := common.NewKeyFromPrivateKey(pk)
 
-	req := &IMinimalForwarderForwardRequest{
-		From:  key.Address(),
-		To:    ethcommon.Address{2}, // arbitrary
-		Value: big.NewInt(0),
-		Gas:   big.NewInt(7000000),
-		Nonce: big.NewInt(0),
-		Data:  []byte{},
+	name := "Forwarder"
+	version := "0.0.1"
+	tx, err = contract.RegisterDomainSeparator(auth, name, version)
+	require.NoError(t, err)
+	receipt, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
+	require.NoError(t, err)
+	t.Logf("gas cost to call RegisterDomainSeparator: %d", receipt.GasUsed)
+
+	req := &IForwarderForwardRequest{
+		From:           key.Address(),
+		To:             ethcommon.Address{2}, // arbitrary
+		Value:          big.NewInt(0),
+		Gas:            big.NewInt(7000000),
+		Nonce:          big.NewInt(0),
+		Data:           []byte{},
+		ValidUntilTime: big.NewInt(0),
 	}
 
-	digest, err := common.GetForwardRequestDigestToSign(
-		req,
-		"MinimalForwarder",
-		"0.0.1",
-		chainID,
-		address,
-	)
+	digest, err := common.GetForwardRequestDigestToSign(req, name, version, chainID, address)
 	require.NoError(t, err)
 
 	sig, err := key.Sign(digest)
+	require.NoError(t, err)
+
+	domainSeparator, err := common.GetEIP712DomainSeparator(name, version, chainID, address)
 	require.NoError(t, err)
 
 	callOpts := &bind.CallOpts{
@@ -81,19 +87,25 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 		Context: context.Background(),
 	}
 
-	ok, err := contract.Verify(callOpts, *req, sig)
+	err = contract.Verify(
+		callOpts,
+		*req,
+		domainSeparator,
+		forwardRequestTypehash,
+		[]byte{},
+		sig,
+	)
 	require.NoError(t, err)
-	require.True(t, ok)
 }
 
-func TestMinimalForwarder_IsIMinimalForwarder(t *testing.T) {
+func TestForwarder_IsIForwarder(t *testing.T) {
 	auth, conn, _ := setupAuth(t)
 
-	address, tx, _, err := DeployMinimalForwarder(auth, conn)
+	address, tx, _, err := DeployForwarder(auth, conn)
 	require.NoError(t, err)
 	_, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
 	require.NoError(t, err)
 
-	_, err = NewIMinimalForwarder(address, conn)
+	_, err = NewIForwarder(address, conn)
 	require.NoError(t, err)
 }

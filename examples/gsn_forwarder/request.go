@@ -12,7 +12,7 @@ import (
 var _ common.ForwardRequest = &IForwarderForwardRequest{}
 
 var (
-	forwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data)"))
+	forwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"))
 )
 
 func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
@@ -24,6 +24,7 @@ func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
 	r.Gas = req.Gas
 	r.Nonce = req.Nonce
 	r.Data = req.Data
+	r.ValidUntilTime = req.ValidUntilTime
 }
 
 func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
@@ -66,6 +67,9 @@ func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
 		{
 			Type: bytes32Ty,
 		},
+		{
+			Type: uint256Ty,
+		},
 	}
 	packed, err := args.Pack(
 		forwardRequestTypehash,
@@ -75,6 +79,7 @@ func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
 		r.Gas,
 		r.Nonce,
 		hashedData,
+		r.ValidUntilTime,
 	)
 	if err != nil {
 		return nil, err

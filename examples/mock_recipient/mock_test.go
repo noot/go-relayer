@@ -108,7 +108,13 @@ func TestMock_Execute(t *testing.T) {
 		Data:  append(functionSig, params...),
 	}
 
-	digest, err := common.GetForwardRequestDigestToSign(req, chainID, address)
+	digest, err := common.GetForwardRequestDigestToSign(
+		req,
+		"MinimalForwarder",
+		"0.0.1",
+		chainID,
+		address,
+	)
 	require.NoError(t, err)
 
 	// in real life, the signer of the digest is the end-user, not the relayer
