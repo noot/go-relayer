@@ -17,6 +17,13 @@ type SubmitTransactionRequest struct {
 	Nonce     *big.Int
 	Data      []byte
 	Signature []byte
+
+	// GSN-specific
+	ValidUntilTime *big.Int
+
+	DomainSeparator [32]byte
+	RequestTypeHash [32]byte
+	SuffixData      []byte
 }
 
 type SubmitTransactionResponse struct {
@@ -25,8 +32,22 @@ type SubmitTransactionResponse struct {
 
 type Forwarder interface {
 	GetNonce(opts *bind.CallOpts, from ethcommon.Address) (*big.Int, error)
-	Verify(opts *bind.CallOpts, req ForwardRequest, signature []byte) (bool, error)
-	Execute(opts *bind.TransactOpts, req ForwardRequest, signature []byte) (*types.Transaction, error)
+	Verify(
+		opts *bind.CallOpts,
+		req ForwardRequest,
+		domainSeparator,
+		requestTypeHash [32]byte,
+		suffixData,
+		signature []byte,
+	) (bool, error)
+	Execute(
+		opts *bind.TransactOpts,
+		req ForwardRequest,
+		domainSeparator,
+		requestTypeHash [32]byte,
+		suffixData,
+		signature []byte,
+	) (*types.Transaction, error)
 }
 
 type ForwardRequest interface {

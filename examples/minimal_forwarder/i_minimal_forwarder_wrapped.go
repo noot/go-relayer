@@ -29,7 +29,14 @@ func (f *IMinimalForwarderWrapped) GetNonce(opts *bind.CallOpts, from ethcommon.
 	return f.f.GetNonce(opts, from)
 }
 
-func (f *IMinimalForwarderWrapped) Verify(opts *bind.CallOpts, req common.ForwardRequest, signature []byte) (bool, error) {
+func (f *IMinimalForwarderWrapped) Verify(
+	opts *bind.CallOpts,
+	req common.ForwardRequest,
+	_,
+	_ [32]byte,
+	_,
+	signature []byte,
+) (bool, error) {
 	r, ok := req.(*IMinimalForwarderForwardRequest)
 	if !ok {
 		return false, errInvalidForwardRequestType
@@ -38,7 +45,14 @@ func (f *IMinimalForwarderWrapped) Verify(opts *bind.CallOpts, req common.Forwar
 	return f.f.Verify(opts, *r, signature)
 }
 
-func (f *IMinimalForwarderWrapped) Execute(opts *bind.TransactOpts, req common.ForwardRequest, signature []byte) (*types.Transaction, error) {
+func (f *IMinimalForwarderWrapped) Execute(
+	opts *bind.TransactOpts,
+	req common.ForwardRequest,
+	_,
+	_ [32]byte,
+	_,
+	signature []byte,
+) (*types.Transaction, error) {
 	r, ok := req.(*IMinimalForwarderForwardRequest)
 	if !ok {
 		return nil, errInvalidForwardRequestType

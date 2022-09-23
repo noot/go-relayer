@@ -1,4 +1,4 @@
-package contracts
+package mock
 
 import (
 	"context"

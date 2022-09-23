@@ -64,7 +64,14 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 	fwdReq.FromSubmitTransactionRequest(req)
 
 	// verify sig beforehand
-	ok, err := s.forwarder.Verify(s.callOpts, fwdReq, req.Signature)
+	ok, err := s.forwarder.Verify(
+		s.callOpts,
+		fwdReq,
+		req.DomainSeparator,
+		req.RequestTypeHash,
+		req.SuffixData,
+		req.Signature,
+	)
 	if !ok {
 		return nil, errFailedToVerify
 	}
@@ -73,7 +80,14 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 		return nil, err
 	}
 
-	tx, err := s.forwarder.Execute(s.txOpts, fwdReq, req.Signature)
+	tx, err := s.forwarder.Execute(
+		s.txOpts,
+		fwdReq,
+		req.DomainSeparator,
+		req.RequestTypeHash,
+		req.SuffixData,
+		req.Signature,
+	)
 	if err != nil {
 		return nil, err
 	}
