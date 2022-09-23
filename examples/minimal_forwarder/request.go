@@ -26,7 +26,7 @@ func (r *IMinimalForwarderForwardRequest) FromSubmitTransactionRequest(
 	r.Data = req.Data
 }
 
-func (r *IMinimalForwarderForwardRequest) Pack() ([]byte, error) {
+func (r *IMinimalForwarderForwardRequest) Pack(_ []byte) ([]byte, error) {
 	uint256Ty, err := abi.NewType("uint256", "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create uint256 type: %w", err)

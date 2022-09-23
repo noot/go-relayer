@@ -27,7 +27,7 @@ func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
 	r.ValidUntilTime = req.ValidUntilTime
 }
 
-func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
+func (r *IForwarderForwardRequest) Pack(suffixData []byte) ([]byte, error) {
 	uint256Ty, err := abi.NewType("uint256", "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create uint256 type: %w", err)
@@ -42,6 +42,11 @@ func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create bytes32 type: %w", err)
 	}
+
+	// bytesTy, err := abi.NewType("bytes", "", nil)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to create bytes type: %w", err)
+	// }
 
 	hashedData := crypto.Keccak256Hash(r.Data)
 
@@ -70,6 +75,9 @@ func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
 		{
 			Type: uint256Ty,
 		},
+		// {
+		// 	Type: bytesTy,
+		// },
 	}
 	packed, err := args.Pack(
 		forwardRequestTypehash,
@@ -80,6 +88,7 @@ func (r *IForwarderForwardRequest) Pack() ([]byte, error) {
 		r.Nonce,
 		hashedData,
 		r.ValidUntilTime,
+		//suffixData,
 	)
 	if err != nil {
 		return nil, err

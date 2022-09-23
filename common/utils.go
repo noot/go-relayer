@@ -19,22 +19,10 @@ func GetFunctionSignature(fn string) []byte {
 // GetForwardRequestDigestToSign returns a 32-byte digest for signing
 func GetForwardRequestDigestToSign(
 	req ForwardRequest,
-	name,
-	version string,
-	chainID *big.Int,
-	forwarderAddress ethcommon.Address,
+	domainSeparator [32]byte,
+	suffixData []byte,
 ) ([32]byte, error) {
-	domainSeparator, err := GetEIP712DomainSeparator(
-		name,
-		version,
-		chainID,
-		forwarderAddress,
-	)
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	hashPreimage, err := req.Pack()
+	hashPreimage, err := req.Pack(suffixData)
 	if err != nil {
 		return [32]byte{}, err
 	}
@@ -53,7 +41,11 @@ func GetForwardRequestDigestToSign(
 
 // GetEIP712DomainSeparator ...
 // Note: address = forwarder contract address
-func GetEIP712DomainSeparator(name, version string, chainID *big.Int, address ethcommon.Address) ([32]byte, error) {
+func GetEIP712DomainSeparator(
+	name, version string,
+	chainID *big.Int,
+	address ethcommon.Address,
+) ([32]byte, error) {
 	bytes32Ty, err := abi.NewType("bytes32", "", nil)
 	if err != nil {
 		return [32]byte{}, fmt.Errorf("failed to create bytes32 type: %w", err)

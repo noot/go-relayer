@@ -8,22 +8,21 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
-// TOOD: add json tags
 type SubmitTransactionRequest struct {
-	From      ethcommon.Address
-	To        ethcommon.Address
-	Value     *big.Int
-	Gas       *big.Int
-	Nonce     *big.Int
-	Data      []byte
-	Signature []byte
+	From      ethcommon.Address `json:"from"`
+	To        ethcommon.Address `json:"to"`
+	Value     *big.Int          `json:"value"`
+	Gas       *big.Int          `json:"gas"`
+	Nonce     *big.Int          `json:"nonce"`
+	Data      []byte            `json:"data"`
+	Signature []byte            `json:"signature"`
 
 	// GSN-specific
-	ValidUntilTime *big.Int
+	ValidUntilTime *big.Int `json:"validUntilTime,omitempty"`
 
-	DomainSeparator [32]byte
-	RequestTypeHash [32]byte
-	SuffixData      []byte
+	DomainSeparator [32]byte `json:"domainSeparator,omitempty"`
+	RequestTypeHash [32]byte `json:"requestTypeHash,omitempty"`
+	SuffixData      []byte   `json:"suffixData,omitempty"`
 }
 
 type SubmitTransactionResponse struct {
@@ -32,6 +31,7 @@ type SubmitTransactionResponse struct {
 
 type Forwarder interface {
 	GetNonce(opts *bind.CallOpts, from ethcommon.Address) (*big.Int, error)
+
 	Verify(
 		opts *bind.CallOpts,
 		req ForwardRequest,
@@ -40,6 +40,7 @@ type Forwarder interface {
 		suffixData,
 		signature []byte,
 	) (bool, error)
+
 	Execute(
 		opts *bind.TransactOpts,
 		req ForwardRequest,
@@ -51,6 +52,18 @@ type Forwarder interface {
 }
 
 type ForwardRequest interface {
+	// FromSubmitTransactionRequest set the type underlying the ForwardRequest
+	// using a *SubmitTransactionRequest.
+	//
+	// Note: not all fields in the *SubmitTransactionRequest need be used depending
+	// on the implementation.
 	FromSubmitTransactionRequest(*SubmitTransactionRequest)
-	Pack() ([]byte, error)
+
+	// Pack uses ABI encoding to pack the underlying ForwardRequest, appending
+	// optional `suffixData` to the end.
+	//
+	// See examples/gsn_forwarder/IForwarderForwardRequest.Pack() or
+	// examples/minimal_forwarder/IMinimalForwarderForwardRequest.Pack()
+	// for details.
+	Pack(suffixData []byte) ([]byte, error)
 }

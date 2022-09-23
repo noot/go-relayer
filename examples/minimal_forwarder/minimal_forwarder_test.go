@@ -64,12 +64,16 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 		Data:  []byte{},
 	}
 
+	name := "MinimalForwarder"
+	version := "0.0.1"
+
+	domainSeparator, err := common.GetEIP712DomainSeparator(name, version, chainID, address)
+	require.NoError(t, err)
+
 	digest, err := common.GetForwardRequestDigestToSign(
 		req,
-		"MinimalForwarder",
-		"0.0.1",
-		chainID,
-		address,
+		domainSeparator,
+		nil,
 	)
 	require.NoError(t, err)
 

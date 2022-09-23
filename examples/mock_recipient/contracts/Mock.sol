@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: LGPLv3
-pragma solidity ^0.8.5;
+pragma solidity ^0.8.16;
 
 import "./external/ERC2771Context.sol";
 
@@ -17,8 +17,6 @@ contract Mock is ERC2771Context {
 		emit FallbackCalled();
 	}
 
-	// todo: express fee as a percentage, instead of an eth value?
-	// would require more math on the solidity side
 	function withdraw(uint256 value, uint256 fee) external {
 		require(isTrustedForwarder(msg.sender), "function must be called by forwarder");
 		require(address(this).balance >= value, "value to transfer is higher than contract balance");

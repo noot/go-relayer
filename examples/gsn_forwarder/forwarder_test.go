@@ -73,13 +73,16 @@ func TestForwarder_Verify(t *testing.T) {
 		ValidUntilTime: big.NewInt(0),
 	}
 
-	digest, err := common.GetForwardRequestDigestToSign(req, name, version, chainID, address)
+	// TODO: fix suffixData encoding - geth's abi.Pack isn't working :(
+	suffixData := []byte("suffixData")
+
+	domainSeparator, err := common.GetEIP712DomainSeparator(name, version, chainID, address)
+	require.NoError(t, err)
+
+	digest, err := common.GetForwardRequestDigestToSign(req, domainSeparator, suffixData)
 	require.NoError(t, err)
 
 	sig, err := key.Sign(digest)
-	require.NoError(t, err)
-
-	domainSeparator, err := common.GetEIP712DomainSeparator(name, version, chainID, address)
 	require.NoError(t, err)
 
 	callOpts := &bind.CallOpts{
@@ -92,7 +95,7 @@ func TestForwarder_Verify(t *testing.T) {
 		*req,
 		domainSeparator,
 		forwardRequestTypehash,
-		[]byte{},
+		nil, //suffixData,
 		sig,
 	)
 	require.NoError(t, err)
