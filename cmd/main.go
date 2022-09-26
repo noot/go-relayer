@@ -57,7 +57,7 @@ var (
 		},
 		&cli.UintFlag{
 			Name:  flagRPCPort,
-			Value: 9545,
+			Value: 7799,
 			Usage: "Relayer RPC server port",
 		},
 		&cli.BoolFlag{
@@ -204,6 +204,7 @@ func deployOrGetForwarder(
 			return nil, err
 		}
 
+		log.Infof("deployed MinimalForwarder.sol to %s", address)
 		return contracts.NewIMinimalForwarder(address, ec)
 	}
 
@@ -212,6 +213,7 @@ func deployOrGetForwarder(
 		return nil, errInvalidAddress
 	}
 
+	log.Infof("loaded MinimalForwarder.sol at %s", ethcommon.HexToAddress(addressString))
 	return contracts.NewIMinimalForwarder(ethcommon.HexToAddress(addressString), ec)
 }
 

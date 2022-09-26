@@ -8,11 +8,16 @@ import (
 	"github.com/AthanorLabs/go-relayer/common"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 var (
-	errFailedToVerify = errors.New("failed to verify forward request signature")
+	errFailedToVerify       = errors.New("failed to verify forward request signature")
+	errFromNotProvided      = errors.New("must provide `from` field in request")
+	errSignatureNotProvided = errors.New("must provide `signature` field in request")
+	errGasNotProvided       = errors.New("must provide `gas` field in request")
+	errNonceNotProvided     = errors.New("must provide `nonce` field in request")
 )
 
 type NewForwardRequestFunc func() common.ForwardRequest
@@ -60,6 +65,11 @@ func NewRelayer(cfg *Config) (*Relayer, error) {
 }
 
 func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) {
+	err := validateRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
 	fwdReq := s.newForwardRequestFunc()
 	fwdReq.FromSubmitTransactionRequest(req)
 
@@ -95,4 +105,24 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 	return &common.SubmitTransactionResponse{
 		TxHash: tx.Hash(),
 	}, nil
+}
+
+func validateRequest(req *common.SubmitTransactionRequest) error {
+	if req.From == (ethcommon.Address{}) {
+		return errFromNotProvided
+	}
+
+	if req.Signature == nil {
+		return errSignatureNotProvided
+	}
+
+	if req.Gas == nil {
+		return errGasNotProvided
+	}
+
+	if req.Nonce == nil {
+		return errNonceNotProvided
+	}
+
+	return nil
 }

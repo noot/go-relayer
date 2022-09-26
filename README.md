@@ -24,6 +24,21 @@ See `cmd/main.go` for an example app using the `examples/minimal_forwarder` pack
 
 The app can be built using `make build`.
 
+To run it in dev mode (which auto-deploys a forwarder contract for you):
+
+First, install and run ganache using:
+```
+NODE_OPTIONS="--max_old_space_size=8192" ganache --deterministic --accounts=50
+```
+
+Then:
+```bash
+$ ./bin/relayer --dev
+2022-09-24T07:43:32.499-0400	INFO	cmd	cmd/main.go:131	starting relayer with ethereum endpoint http://localhost:8545 and chain ID 1337
+2022-09-24T07:43:32.541-0400	INFO	cmd	cmd/main.go:207	deployed MinimalForwarder.sol to 0x8E7a8d3CAeEbbe9A92faC4db19424218aE6791a3
+2022-09-24T07:43:32.542-0400	INFO	rpc	rpc/server.go:62	starting RPC server on http://localhost:9545
+```
+
 ### Implementing a custom forwarder
 
 See the forwarder examples in `examples/` for a full implementation.
