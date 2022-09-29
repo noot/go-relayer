@@ -3,8 +3,8 @@ package mock
 import (
 	"context"
 	"crypto/ecdsa"
-	"encoding/hex"
 	"math/big"
+	"strings"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -82,30 +82,18 @@ func TestMock_Execute(t *testing.T) {
 	// generate ForwardRequest and sign it
 	key := common.NewKeyFromPrivateKey(pk)
 
-	functionSig := common.GetFunctionSignature("withdraw(uint256,uint256)")
-	require.Equal(t, "441a3e70", hex.EncodeToString(functionSig))
-
-	uint256Ty, err := abi.NewType("uint256", "", nil)
+	abi, err := abi.JSON(strings.NewReader(MockABI))
 	require.NoError(t, err)
-
-	args := &abi.Arguments{
-		{
-			Type: uint256Ty,
-		},
-		{
-			Type: uint256Ty,
-		},
-	}
-	params, err := args.Pack(value, fee)
+	calldata, err := abi.Pack("withdraw", value, fee)
 	require.NoError(t, err)
 
 	req := &mforwarder.IMinimalForwarderForwardRequest{
 		From:  key.Address(),
 		To:    mockAddress,
 		Value: big.NewInt(0),
-		Gas:   big.NewInt(7000000),
+		Gas:   big.NewInt(679639582),
 		Nonce: big.NewInt(0),
-		Data:  append(functionSig, params...),
+		Data:  calldata,
 	}
 
 	name := "MinimalForwarder"

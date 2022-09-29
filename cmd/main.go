@@ -104,6 +104,7 @@ func setLogLevels(c *cli.Context) error {
 	}
 
 	_ = logging.SetLogLevel("cmd", level)
+	_ = logging.SetLogLevel("relayer", level)
 	_ = logging.SetLogLevel("rpc", level)
 	return nil
 }

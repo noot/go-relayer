@@ -10,7 +10,11 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+
+	logging "github.com/ipfs/go-log"
 )
+
+var log = logging.Logger("relayer")
 
 var (
 	errFailedToVerify       = errors.New("failed to verify forward request signature")
@@ -102,6 +106,7 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 		return nil, err
 	}
 
+	log.Infof("submitted transaction %s", tx.Hash())
 	return &common.SubmitTransactionResponse{
 		TxHash: tx.Hash(),
 	}, nil

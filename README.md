@@ -125,4 +125,4 @@ func (s *RelayerService) SubmitTransaction(
 ) error 
 ```
 
-[WIP relayer-client, curl examples]
+See [go-relayer-client](https://github.com/AthanorLabs/go-relayer-client) for client library and example usage.
