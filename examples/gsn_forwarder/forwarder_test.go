@@ -55,9 +55,7 @@ func TestForwarder_Verify(t *testing.T) {
 
 	key := common.NewKeyFromPrivateKey(pk)
 
-	name := "Forwarder"
-	version := "0.0.1"
-	tx, err = contract.RegisterDomainSeparator(auth, name, version)
+	tx, err = contract.RegisterDomainSeparator(auth, DefaultName, DefaultVersion)
 	require.NoError(t, err)
 	receipt, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
 	require.NoError(t, err)
@@ -76,7 +74,7 @@ func TestForwarder_Verify(t *testing.T) {
 	// TODO: fix suffixData encoding - geth's abi.Pack isn't working :(
 	suffixData := []byte("suffixData")
 
-	domainSeparator, err := common.GetEIP712DomainSeparator(name, version, chainID, address)
+	domainSeparator, err := common.GetEIP712DomainSeparator(DefaultName, DefaultVersion, chainID, address)
 	require.NoError(t, err)
 
 	digest, err := common.GetForwardRequestDigestToSign(req, domainSeparator, suffixData)
@@ -94,7 +92,7 @@ func TestForwarder_Verify(t *testing.T) {
 		callOpts,
 		*req,
 		domainSeparator,
-		forwardRequestTypehash,
+		ForwardRequestTypehash,
 		nil, //suffixData,
 		sig,
 	)

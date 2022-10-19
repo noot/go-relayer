@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/AthanorLabs/go-relayer/common"
-	contracts "github.com/AthanorLabs/go-relayer/examples/minimal_forwarder"
+	contracts "github.com/AthanorLabs/go-relayer/examples/gsn_forwarder"
 	"github.com/AthanorLabs/go-relayer/relayer"
 	"github.com/AthanorLabs/go-relayer/rpc"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"
@@ -149,10 +149,10 @@ func run(c *cli.Context) error {
 	cfg := &relayer.Config{
 		Ctx:                   context.Background(),
 		EthClient:             ec,
-		Forwarder:             contracts.NewIMinimalForwarderWrapped(forwarder),
+		Forwarder:             contracts.NewIForwarderWrapped(forwarder),
 		Key:                   key,
 		ChainID:               chainID,
-		NewForwardRequestFunc: contracts.NewIMinimalForwarderForwardRequest,
+		NewForwardRequestFunc: contracts.NewIForwarderForwardRequest,
 	}
 
 	r, err := relayer.NewRelayer(cfg)
@@ -188,14 +188,14 @@ func deployOrGetForwarder(
 	ec *ethclient.Client,
 	key *common.Key,
 	chainID *big.Int,
-) (*contracts.IMinimalForwarder, error) { // TODO: change to interface
+) (*contracts.IForwarder, error) { // TODO: change to interface
 	txOpts, err := bind.NewKeyedTransactorWithChainID(key.PrivateKey(), chainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make transactor: %w", err)
 	}
 
 	if addressString == "" {
-		address, tx, _, err := contracts.DeployMinimalForwarder(txOpts, ec)
+		address, tx, _, err := contracts.DeployForwarder(txOpts, ec)
 		if err != nil {
 			return nil, err
 		}
@@ -205,8 +205,8 @@ func deployOrGetForwarder(
 			return nil, err
 		}
 
-		log.Infof("deployed MinimalForwarder.sol to %s", address)
-		return contracts.NewIMinimalForwarder(address, ec)
+		log.Infof("deployed Forwarder.sol to %s", address)
+		return contracts.NewIForwarder(address, ec)
 	}
 
 	ok := ethcommon.IsHexAddress(addressString)
@@ -214,8 +214,8 @@ func deployOrGetForwarder(
 		return nil, errInvalidAddress
 	}
 
-	log.Infof("loaded MinimalForwarder.sol at %s", ethcommon.HexToAddress(addressString))
-	return contracts.NewIMinimalForwarder(ethcommon.HexToAddress(addressString), ec)
+	log.Infof("loaded Forwarder.sol at %s", ethcommon.HexToAddress(addressString))
+	return contracts.NewIForwarder(ethcommon.HexToAddress(addressString), ec)
 }
 
 func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {

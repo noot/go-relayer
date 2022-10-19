@@ -86,12 +86,12 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 		req.SuffixData,
 		req.Signature,
 	)
-	if !ok {
-		return nil, errFailedToVerify
-	}
-
 	if err != nil {
 		return nil, err
+	}
+
+	if !ok {
+		return nil, errFailedToVerify
 	}
 
 	tx, err := s.forwarder.Execute(

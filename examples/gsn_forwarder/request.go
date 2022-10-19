@@ -2,6 +2,7 @@ package gsnforwarder
 
 import (
 	"fmt"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -12,7 +13,9 @@ import (
 var _ common.ForwardRequest = &IForwarderForwardRequest{}
 
 var (
-	forwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"))
+	DefaultName            = "Forwarder"
+	DefaultVersion         = "0.0.1"
+	ForwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"))
 )
 
 func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
@@ -48,6 +51,10 @@ func (r *IForwarderForwardRequest) Pack(suffixData []byte) ([]byte, error) {
 	// 	return nil, fmt.Errorf("failed to create bytes type: %w", err)
 	// }
 
+	if r.ValidUntilTime == nil {
+		r.ValidUntilTime = big.NewInt(0)
+	}
+
 	hashedData := crypto.Keccak256Hash(r.Data)
 
 	args := &abi.Arguments{
@@ -80,7 +87,7 @@ func (r *IForwarderForwardRequest) Pack(suffixData []byte) ([]byte, error) {
 		// },
 	}
 	packed, err := args.Pack(
-		forwardRequestTypehash,
+		ForwardRequestTypehash,
 		r.From,
 		r.To,
 		r.Value,
