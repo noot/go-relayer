@@ -36,8 +36,10 @@ Then:
 $ ./bin/relayer --dev
 2022-09-24T07:43:32.499-0400	INFO	cmd	cmd/main.go:131	starting relayer with ethereum endpoint http://localhost:8545 and chain ID 1337
 2022-09-24T07:43:32.541-0400	INFO	cmd	cmd/main.go:207	deployed MinimalForwarder.sol to 0x8E7a8d3CAeEbbe9A92faC4db19424218aE6791a3
-2022-09-24T07:43:32.542-0400	INFO	rpc	rpc/server.go:62	starting RPC server on http://localhost:9545
+2022-09-24T07:43:32.542-0400	INFO	rpc	rpc/server.go:62	starting RPC server on http://localhost:7799
 ```
+
+By default, the relayer server runs on port `7799`.
 
 ### Implementing a custom forwarder
 
