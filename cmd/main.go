@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/AthanorLabs/go-relayer/common"
-	contracts "github.com/AthanorLabs/go-relayer/examples/gsn_forwarder"
+	contracts "github.com/AthanorLabs/go-relayer/impls/gsnforwarder"
 	"github.com/AthanorLabs/go-relayer/relayer"
 	"github.com/AthanorLabs/go-relayer/rpc"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"

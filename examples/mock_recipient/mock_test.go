@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/AthanorLabs/go-relayer/common"
-	mforwarder "github.com/AthanorLabs/go-relayer/examples/minimal_forwarder"
+	"github.com/AthanorLabs/go-relayer/impls/mforwarder"
 	"github.com/athanorlabs/atomic-swap/ethereum/block"
 )
 
