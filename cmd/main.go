@@ -123,7 +123,8 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	chainID, err := ec.ChainID(context.Background())
+	ctx := c.Context
+	chainID, err := ec.ChainID(ctx)
 	if err != nil {
 		return err
 	}
@@ -160,7 +161,8 @@ func run(c *cli.Context) error {
 	}
 
 	rpcCfg := &rpc.Config{
-		Port:    port,
+		Ctx:     ctx,
+		Address: fmt.Sprintf("127.0.0.1:%d", port),
 		Relayer: r,
 	}
 

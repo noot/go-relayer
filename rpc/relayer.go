@@ -3,8 +3,8 @@ package rpc
 import (
 	"net/http"
 
-	"github.com/AthanorLabs/go-relayer/common"
-	"github.com/AthanorLabs/go-relayer/relayer"
+	"github.com/athanorlabs/go-relayer/common"
+	"github.com/athanorlabs/go-relayer/relayer"
 )
 
 type RelayerService struct {
