@@ -11,16 +11,15 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/AthanorLabs/go-relayer/common"
-	contracts "github.com/AthanorLabs/go-relayer/impls/gsnforwarder"
-	"github.com/AthanorLabs/go-relayer/relayer"
-	"github.com/AthanorLabs/go-relayer/rpc"
-	"github.com/athanorlabs/atomic-swap/ethereum/block"
-
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/urfave/cli/v2"
+
+	"github.com/athanorlabs/go-relayer/common"
+	contracts "github.com/athanorlabs/go-relayer/impls/gsnforwarder"
+	"github.com/athanorlabs/go-relayer/relayer"
+	"github.com/athanorlabs/go-relayer/rpc"
 
 	logging "github.com/ipfs/go-log"
 )
@@ -200,7 +199,7 @@ func deployOrGetForwarder(
 			return nil, err
 		}
 
-		_, err = block.WaitForReceipt(context.Background(), ec, tx.Hash())
+		_, err = bind.WaitMined(context.Background(), ec, tx)
 		if err != nil {
 			return nil, err
 		}

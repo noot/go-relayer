@@ -1,9 +1,8 @@
-module github.com/AthanorLabs/go-relayer
+module github.com/athanorlabs/go-relayer
 
 go 1.19
 
 require (
-	github.com/athanorlabs/atomic-swap v0.1.1-0.20220907015246-000b734f5506
 	github.com/ethereum/go-ethereum v1.10.23
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
@@ -29,7 +28,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rivo/uniseg v0.3.4 // indirect
 	github.com/rjeczalik/notify v0.9.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
