@@ -24,6 +24,7 @@ func TestServer_NewServer(t *testing.T) {
 	httpURL := s.HttpURL()
 	portStr := strings.Replace(httpURL, "http://127.0.0.1:", "", 1)
 	port, err := strconv.Atoi(portStr)
+	require.NoError(t, err)
 	require.GreaterOrEqual(t, port, 1024)
 	require.Equal(t, s.listener.Addr().(*net.TCPAddr).Port, port)
 	require.NoError(t, s.listener.Close())
