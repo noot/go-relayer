@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/AthanorLabs/go-relayer/common"
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 var _ common.ForwardRequest = &IForwarderForwardRequest{}
