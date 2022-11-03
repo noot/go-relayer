@@ -86,16 +86,35 @@ func (s *Server) HttpURL() string { //nolint:revive
 }
 
 // Start starts the JSON-RPC server.
-func (s *Server) Start() <-chan error {
-	errCh := make(chan error, 1)
-
+func (s *Server) Start() error {
 	log.Infof("Starting RPC server on %s", s.HttpURL())
-
+	serverErr := make(chan error, 1)
 	go func() {
-		err := s.httpServer.Serve(s.listener) // Serve never returns nil
-		log.Errorf("RPC server failed: %s", err)
-		errCh <- err
+		// Serve never returns nil. Even if it stops because Shutdown() was called, it
+		// will return http.ErrServerClosed.
+		serverErr <- s.httpServer.Serve(s.listener)
 	}()
 
-	return errCh
+	select {
+	case <-s.ctx.Done():
+		// We are passing Shutdown a context that is already closed, which means it will
+		// shut down immediately. If you pass a live context, it will stop listening for
+		// new connections, but try to finish serving existing request while the context
+		// is valid.
+		if err := s.httpServer.Shutdown(s.ctx); err != nil {
+			log.Warnf("http server shutdown errored: %s", err)
+		}
+		// We shut down because the context was cancelled, so that's the error to return
+		return s.ctx.Err()
+	case err := <-serverErr:
+		log.Errorf("RPC server failed: %s", err)
+		return err
+	}
+}
+
+// Stop shuts down the http server. If the context the server was created with is still
+// valid, it will be a graceful shutdown where existing connections are serviced until
+// finished. If the context is cancelled, the shutdown will be immediate.
+func (s *Server) Stop() error {
+	return s.httpServer.Shutdown(s.ctx)
 }

@@ -175,13 +175,7 @@ func run(c *cli.Context) error {
 	signal.Notify(sigc, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(sigc)
 
-	errCh := server.Start()
-	select {
-	case err := <-errCh:
-		return err
-	case <-sigc:
-		return nil
-	}
+	return server.Start()
 }
 
 func deployOrGetForwarder(
