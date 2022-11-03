@@ -12,8 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AthanorLabs/go-relayer/common"
-	"github.com/athanorlabs/atomic-swap/ethereum/block"
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 // NODE_OPTIONS="--max_old_space_size=8192" ganache --deterministic --accounts=50
@@ -49,7 +48,7 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 	require.NotEqual(t, ethcommon.Address{}, address)
 	require.NotNil(t, tx)
 	require.NotNil(t, contract)
-	receipt, err := block.WaitForReceipt(context.Background(), conn, tx.Hash())
+	receipt, err := bind.WaitMined(context.Background(), conn, tx)
 	require.NoError(t, err)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
@@ -95,7 +94,7 @@ func TestMinimalForwarder_IsIMinimalForwarder(t *testing.T) {
 
 	address, tx, _, err := DeployMinimalForwarder(auth, conn)
 	require.NoError(t, err)
-	_, err = block.WaitForReceipt(context.Background(), conn, tx.Hash())
+	_, err = bind.WaitMined(context.Background(), conn, tx)
 	require.NoError(t, err)
 
 	_, err = NewIMinimalForwarder(address, conn)

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/AthanorLabs/go-relayer/common"
+	"github.com/athanorlabs/go-relayer/common"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethcommon "github.com/ethereum/go-ethereum/common"
