@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -102,12 +103,18 @@ func (s *Server) Start() error {
 		// new connections, but try to finish serving existing request while the context
 		// is valid.
 		if err := s.httpServer.Shutdown(s.ctx); err != nil {
-			log.Warnf("http server shutdown errored: %s", err)
+			log.Warnf("RPC server shutdown errored: %s", err)
+		} else {
+			log.Infof("RPC server shut down")
 		}
 		// We shut down because the context was cancelled, so that's the error to return
 		return s.ctx.Err()
 	case err := <-serverErr:
-		log.Errorf("RPC server failed: %s", err)
+		if errors.Is(err, http.ErrServerClosed) {
+			log.Infof("RPC server shut down")
+		} else {
+			log.Errorf("RPC server failed: %s", err)
+		}
 		return err
 	}
 }
