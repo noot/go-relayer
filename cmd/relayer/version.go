@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"runtime/debug"
+	"strings"
 )
 
 // GetVersion returns our version string for an executable
@@ -12,24 +13,25 @@ func getVersion() string {
 		return "unknown-version"
 	}
 
-	commitHash := "???????"
-	dirty := ""
+	// info.Main.Version is " (devel)" if no tag was passed to go install
+	version := strings.Replace(info.Main.Version, "(devel)", "dev", 1)
+	dirty := false
 
 	for _, setting := range info.Settings {
 		switch setting.Key {
 		case "vcs.revision":
-			commitHash = setting.Value
+			// limit hash to 7 bytes (what "git rev-parse --short HEAD" returns)
+			version = fmt.Sprintf("%s-%.7s", version, setting.Value)
 		case "vcs.modified":
 			if setting.Value == "true" {
-				dirty = "-dirty"
+				dirty = true
 			}
 		}
 	}
 
-	return fmt.Sprintf("%s %.7s%s-%s",
-		info.Main.Version, // " (devel)" unless passing a git tagged version to `go install`
-		commitHash,        // 7 bytes is what "git rev-parse --short HEAD" returns
-		dirty,             // add "-dirty" to commit hash if repo was not clean
-		info.GoVersion,
-	)
+	if dirty {
+		version += "-dirty"
+	}
+
+	return fmt.Sprintf("%s-%s", version, info.GoVersion)
 }
