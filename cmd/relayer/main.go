@@ -5,11 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"net/http"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethcommon "github.com/ethereum/go-ethereum/common"
@@ -36,7 +35,7 @@ const (
 )
 
 var (
-	log = logging.Logger("cmd")
+	log = logging.Logger("main")
 
 	flags = []cli.Flag{
 		&cli.StringFlag{
@@ -76,10 +75,11 @@ var (
 
 func main() {
 	app := &cli.App{
-		Name:   "relayer",
-		Usage:  "Ethereum transaction relayer",
-		Flags:  flags,
-		Action: run,
+		Name:    "relayer",
+		Usage:   "Ethereum transaction relayer",
+		Version: getVersion(),
+		Flags:   flags,
+		Action:  run,
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -102,7 +102,7 @@ func setLogLevels(c *cli.Context) error {
 		return fmt.Errorf("invalid log level %q", level)
 	}
 
-	_ = logging.SetLogLevel("cmd", level)
+	_ = logging.SetLogLevel("main", level)
 	_ = logging.SetLogLevel("relayer", level)
 	_ = logging.SetLogLevel("rpc", level)
 	return nil
@@ -123,7 +123,9 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	ctx := c.Context
+	ctx, cancel := context.WithCancel(c.Context)
+	go signalHandler(ctx, cancel)
+
 	chainID, err := ec.ChainID(ctx)
 	if err != nil {
 		return err
@@ -171,11 +173,11 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	sigc := make(chan os.Signal, 1)
-	signal.Notify(sigc, syscall.SIGINT, syscall.SIGTERM)
-	defer signal.Stop(sigc)
-
-	return server.Start()
+	err = server.Start()
+	if errors.Is(err, context.Canceled) || errors.Is(err, http.ErrServerClosed) {
+		return nil
+	}
+	return err
 }
 
 func deployOrGetForwarder(

@@ -9,4 +9,5 @@ test:
 	go test ./...
 
 build:
-	cd cmd && go build -o ../bin/relayer 
+	mkdir -p bin
+	GOBIN="$(CURDIR)/bin/" go install ./cmd/...
