@@ -1,3 +1,4 @@
-bin/
-contracts/abi
-contracts/bin
+/bin/
+/contracts/abi
+/contracts/bin
+eth.key
