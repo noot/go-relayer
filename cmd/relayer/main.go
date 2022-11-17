@@ -29,9 +29,10 @@ const (
 	flagKey              = "key"
 	flagRPCPort          = "rpc-port"
 	flagDev              = "dev"
-	flagLog              = "log"
+	flagLog              = "log-level"
 
-	defaultGanacheKey = "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d"
+	// defaultGanacheKey is Ganache deterministic key #2 (indexed from zero)
+	defaultGanacheKey = "6370fd033278c143179d81c5526140625662b8daa446c22ee2d73db3707e620c"
 )
 
 var (
@@ -216,10 +217,6 @@ func deployOrGetForwarder(
 }
 
 func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {
-	if dev {
-		return common.NewKeyFromPrivateKeyString(defaultGanacheKey)
-	}
-
 	if keyFile != "" {
 		fileData, err := os.ReadFile(filepath.Clean(keyFile))
 		if err != nil {
@@ -227,6 +224,10 @@ func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {
 		}
 		keyHex := strings.TrimSpace(string(fileData))
 		return common.NewKeyFromPrivateKeyString(keyHex)
+	}
+
+	if dev {
+		return common.NewKeyFromPrivateKeyString(defaultGanacheKey)
 	}
 
 	return nil, errNoEthereumPrivateKey
