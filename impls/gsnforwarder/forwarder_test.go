@@ -23,8 +23,7 @@ func TestForwarder_Verify(t *testing.T) {
 	require.NotEqual(t, ethcommon.Address{}, address)
 	require.NotNil(t, tx)
 	require.NotNil(t, contract)
-	receipt, err := bind.WaitMined(context.Background(), ec, tx)
-	require.NoError(t, err)
+	receipt := tests.MineTransaction(t, ec, tx)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
 	key := common.NewKeyFromPrivateKey(pk)
@@ -32,8 +31,7 @@ func TestForwarder_Verify(t *testing.T) {
 	auth = tests.NewTXOpts(t, ec, pk)
 	tx, err = contract.RegisterDomainSeparator(auth, DefaultName, DefaultVersion)
 	require.NoError(t, err)
-	receipt, err = bind.WaitMined(context.Background(), ec, tx)
-	require.NoError(t, err)
+	receipt = tests.MineTransaction(t, ec, tx)
 	t.Logf("gas cost to call RegisterDomainSeparator: %d", receipt.GasUsed)
 
 	req := &IForwarderForwardRequest{
@@ -81,8 +79,7 @@ func TestForwarder_IsIForwarder(t *testing.T) {
 
 	address, tx, _, err := DeployForwarder(auth, ec)
 	require.NoError(t, err)
-	_, err = bind.WaitMined(context.Background(), ec, tx)
-	require.NoError(t, err)
+	tests.MineTransaction(t, ec, tx)
 
 	_, err = NewIForwarder(address, ec)
 	require.NoError(t, err)

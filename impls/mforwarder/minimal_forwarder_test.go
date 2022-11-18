@@ -23,8 +23,7 @@ func TestMinimalForwarder_Verify(t *testing.T) {
 	require.NotEqual(t, ethcommon.Address{}, address)
 	require.NotNil(t, tx)
 	require.NotNil(t, contract)
-	receipt, err := bind.WaitMined(context.Background(), ec, tx)
-	require.NoError(t, err)
+	receipt := tests.MineTransaction(t, ec, tx)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
 	key := common.NewKeyFromPrivateKey(pk)
@@ -71,8 +70,7 @@ func TestMinimalForwarder_IsIMinimalForwarder(t *testing.T) {
 
 	address, tx, _, err := DeployMinimalForwarder(auth, ec)
 	require.NoError(t, err)
-	_, err = bind.WaitMined(context.Background(), ec, tx)
-	require.NoError(t, err)
+	_ = tests.MineTransaction(t, ec, tx)
 
 	_, err = NewIMinimalForwarder(address, ec)
 	require.NoError(t, err)

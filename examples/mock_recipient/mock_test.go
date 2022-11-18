@@ -16,6 +16,7 @@ import (
 
 	"github.com/athanorlabs/go-relayer/common"
 	"github.com/athanorlabs/go-relayer/impls/mforwarder"
+	"github.com/athanorlabs/go-relayer/tests"
 )
 
 // NODE_OPTIONS="--max_old_space_size=8192" ganache --deterministic --accounts=50
@@ -48,14 +49,12 @@ func TestMock_Execute(t *testing.T) {
 
 	address, tx, contract, err := mforwarder.DeployMinimalForwarder(auth, conn)
 	require.NoError(t, err)
-	receipt, err := bind.WaitMined(context.Background(), conn, tx)
-	require.NoError(t, err)
+	receipt := tests.MineTransaction(t, conn, tx)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
 	mockAddress, mockTx, _, err := DeployMock(auth, conn, address)
 	require.NoError(t, err)
-	receipt, err = bind.WaitMined(context.Background(), conn, mockTx)
-	require.NoError(t, err)
+	receipt = tests.MineTransaction(t, conn, mockTx)
 	t.Logf("gas cost to deploy Mock.sol: %d", receipt.GasUsed)
 
 	// transfer to Mock.sol
@@ -75,8 +74,7 @@ func TestMock_Execute(t *testing.T) {
 	require.NoError(t, err)
 	err = conn.SendTransaction(context.Background(), transferTx)
 	require.NoError(t, err)
-	_, err = bind.WaitMined(context.Background(), conn, transferTx)
-	require.NoError(t, err)
+	tests.MineTransaction(t, conn, transferTx)
 
 	// generate ForwardRequest and sign it
 	key := common.NewKeyFromPrivateKey(pk)
@@ -125,8 +123,7 @@ func TestMock_Execute(t *testing.T) {
 	// execute withdraw() via forwarder
 	tx, err = contract.Execute(auth, *req, sig)
 	require.NoError(t, err)
-	receipt, err = bind.WaitMined(context.Background(), conn, tx)
-	require.NoError(t, err)
+	receipt = tests.MineTransaction(t, conn, tx)
 	t.Logf("gas cost to call Mock.withdraw() via MinimalForwarder.execute(): %d", receipt.GasUsed)
 	require.Equal(t, uint64(1), receipt.Status)
 	require.Equal(t, 1, len(receipt.Logs))
