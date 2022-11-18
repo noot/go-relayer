@@ -28,7 +28,7 @@ The app can be built using `make build`.
 
 First, install and run ganache using:
 ```
-NODE_OPTIONS="--max_old_space_size=8192" ganache --deterministic --accounts=50
+ganache --deterministic --accounts=50
 ```
 
 Create a key file using a deterministic ganache key
