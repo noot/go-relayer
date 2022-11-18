@@ -28,10 +28,8 @@ const (
 	flagForwarderAddress = "forwarder-address"
 	flagKey              = "key"
 	flagRPCPort          = "rpc-port"
-	flagDev              = "dev"
-	flagLog              = "log"
-
-	defaultGanacheKey = "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d"
+	flagDeploy           = "deploy"
+	flagLog              = "log-level"
 )
 
 var (
@@ -44,11 +42,6 @@ var (
 			Usage: "Ethereum RPC endpoint",
 		},
 		&cli.StringFlag{
-			Name:  flagForwarderAddress,
-			Value: "",
-			Usage: "Forwarder contract address",
-		},
-		&cli.StringFlag{
 			Name:  flagKey,
 			Value: "eth.key",
 			Usage: "Path to file containing Ethereum private key",
@@ -59,8 +52,12 @@ var (
 			Usage: "Relayer RPC server port",
 		},
 		&cli.BoolFlag{
-			Name:  flagDev,
-			Usage: "Use development configuration and deploy forwarder contract",
+			Name:  flagDeploy,
+			Usage: "Deploy an instance of the forwarder contract",
+		},
+		&cli.StringFlag{
+			Name:  flagForwarderAddress,
+			Usage: "Forwarder contract address",
 		},
 		&cli.StringFlag{
 			Name:  flagLog,
@@ -115,8 +112,6 @@ func run(c *cli.Context) error {
 	}
 
 	port := uint16(c.Uint(flagRPCPort))
-	dev := c.Bool(flagDev)
-
 	endpoint := c.String(flagEndpoint)
 	ec, err := ethclient.Dial(endpoint)
 	if err != nil {
@@ -133,13 +128,23 @@ func run(c *cli.Context) error {
 
 	log.Infof("starting relayer with ethereum endpoint %s and chain ID %s", endpoint, chainID)
 
-	key, err := getPrivateKey(c.String(flagKey), dev)
+	key, err := getPrivateKey(c.String(flagKey))
 	if err != nil {
 		return err
 	}
 
+	contractAddr := c.String(flagForwarderAddress)
+	deploy := c.Bool(flagDeploy)
+	contractSet := contractAddr != ""
+	if deploy && contractSet {
+		return fmt.Errorf("flags --%s and --%s are mutually exclusive", flagDeploy, flagForwarderAddress)
+	}
+	if !deploy && !contractSet {
+		return fmt.Errorf("either --%s or --%s is required", flagDeploy, flagForwarderAddress)
+	}
+
 	forwarder, err := deployOrGetForwarder(
-		c.String(flagForwarderAddress),
+		contractAddr,
 		ec,
 		key,
 		chainID,
@@ -215,11 +220,7 @@ func deployOrGetForwarder(
 	return contracts.NewIForwarder(ethcommon.HexToAddress(addressString), ec)
 }
 
-func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {
-	if dev {
-		return common.NewKeyFromPrivateKeyString(defaultGanacheKey)
-	}
-
+func getPrivateKey(keyFile string) (*common.Key, error) {
 	if keyFile != "" {
 		fileData, err := os.ReadFile(filepath.Clean(keyFile))
 		if err != nil {
@@ -228,6 +229,5 @@ func getPrivateKey(keyFile string, dev bool) (*common.Key, error) {
 		keyHex := strings.TrimSpace(string(fileData))
 		return common.NewKeyFromPrivateKeyString(keyHex)
 	}
-
 	return nil, errNoEthereumPrivateKey
 }
