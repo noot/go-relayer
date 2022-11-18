@@ -22,7 +22,7 @@ Components:
 
 ### As an application
 
-See `cmd/relayer/main.go` for an example app using the `impls/minimal_forwarder` package. 
+See `cmd/relayer/main.go` for an example app using the `impls/gsnforwarder` package.
 
 The app can be built using `make build`.
 
