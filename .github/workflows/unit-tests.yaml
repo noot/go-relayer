@@ -48,5 +48,5 @@ jobs:
         
       - name: Run unit tests
         run: |
-          ./scripts/run-ganache.sh
+          ./scripts/run-ganache.sh &> ganache.log &
           make test
