@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Run linters
         run: make lint
 
@@ -27,5 +27,4 @@ jobs:
 
       - name: Run go vet
         run: |
-          make init
           go vet ./...
