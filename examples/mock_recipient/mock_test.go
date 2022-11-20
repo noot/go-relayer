@@ -61,12 +61,15 @@ func TestMock_Execute(t *testing.T) {
 	value := big.NewInt(1000000)
 	fee := big.NewInt(10000)
 
+	gasPrice, err := conn.SuggestGasPrice(context.Background())
+	require.NoError(t, err)
+
 	transferTx := ethtypes.NewTransaction(
 		0,
 		mockAddress,
 		value,
 		100000,
-		big.NewInt(531099458),
+		gasPrice,
 		nil,
 	)
 
