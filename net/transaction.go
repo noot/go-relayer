@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 
-	net "github.com/athanorlabs/go-p2p-net"
+	p2pnet "github.com/athanorlabs/go-p2p-net"
 )
 
 const (
@@ -37,7 +37,7 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 		SubmitTransactionResponse: resp,
 	}
 
-	if err := net.WriteStreamMessage(stream, msgResp, stream.Conn().RemotePeer()); err != nil {
+	if err := p2pnet.WriteStreamMessage(stream, msgResp, stream.Conn().RemotePeer()); err != nil {
 		log.Warnf("failed to send TransactionResponse message to peer: %s", err)
 	}
 
@@ -66,7 +66,7 @@ func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*Transac
 }
 
 func submitTransaction(msg *TransactionRequest, stream libp2pnetwork.Stream) (*TransactionResponse, error) {
-	err := net.WriteStreamMessage(stream, msg, stream.Conn().RemotePeer())
+	err := p2pnet.WriteStreamMessage(stream, msg, stream.Conn().RemotePeer())
 	if err != nil {
 		return nil, err
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 
-	net "github.com/athanorlabs/go-p2p-net"
+	p2pnet "github.com/athanorlabs/go-p2p-net"
 	"github.com/athanorlabs/go-relayer/common"
 )
 
@@ -22,8 +22,8 @@ const (
 
 var log = logging.Logger("net")
 
-// NetHost contains libp2p functionality used by the Host.
-type NetHost interface {
+// P2pnetHost contains libp2p functionality used by the Host.
+type P2pnetHost interface {
 	Start() error
 	Stop() error
 
@@ -31,7 +31,7 @@ type NetHost interface {
 	Discover(provides string, searchTime time.Duration) ([]peer.ID, error)
 
 	SetStreamHandler(string, func(libp2pnetwork.Stream))
-	SetShouldAdvertiseFunc(net.ShouldAdvertiseFunc)
+	SetShouldAdvertiseFunc(p2pnet.ShouldAdvertiseFunc)
 
 	Connectedness(peer.ID) libp2pnetwork.Connectedness
 	Connect(context.Context, peer.AddrInfo) error
@@ -49,33 +49,42 @@ type HandleTransactionFunc func(*common.SubmitTransactionRequest) (*common.Submi
 // Host represents a p2p node that implements the atomic swap protocol.
 type Host struct {
 	ctx               context.Context
-	h                 NetHost
+	h                 P2pnetHost
 	handleTransaction HandleTransactionFunc
+	isRelayer         bool
+}
+
+type Config struct {
+	P2pConfig             *p2pnet.Config
+	HandleTransactionFunc HandleTransactionFunc
+	IsRelayer             bool
 }
 
 // NewHost returns a new Host.
-func NewHost(cfg *net.Config, handleTransaction HandleTransactionFunc) (*Host, error) {
-	h, err := net.NewHost(cfg)
+func NewHost(cfg *Config) (*Host, error) {
+	h, err := p2pnet.NewHost(cfg.P2pConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Host{
-		ctx:               cfg.Ctx,
+		ctx:               cfg.P2pConfig.Ctx,
 		h:                 h,
-		handleTransaction: handleTransaction,
+		handleTransaction: cfg.HandleTransactionFunc,
+		isRelayer:         cfg.IsRelayer,
 	}, nil
 }
 
 // Start starts the bootstrap and discovery process.
 func (h *Host) Start() error {
-	return h.h.Start()
-}
+	if h.isRelayer {
+		// if we're a relayer, we want to handle incoming transaction streams
+		// and advertise that we're a relayer in the DHT.
+		h.h.SetStreamHandler(transactionID, h.handleTransactionStream)
+		h.Advertise()
+	}
 
-// TODO: maybe call becomeRelayer or something??
-func (h *Host) HandleTransactions() {
-	h.h.SetStreamHandler(transactionID, h.handleTransactionStream)
-	// TODO: also advertise
+	return h.h.Start()
 }
 
 // Stop stops the host.
@@ -115,7 +124,7 @@ func (h *Host) PeerID() peer.ID {
 }
 
 func readStreamMessage(stream libp2pnetwork.Stream, maxMessageSize uint32) (Message, error) {
-	msgBytes, err := net.ReadStreamMessage(stream, maxMessageSize)
+	msgBytes, err := p2pnet.ReadStreamMessage(stream, maxMessageSize)
 	if err != nil {
 		return nil, err
 	}

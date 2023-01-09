@@ -253,7 +253,13 @@ func setupNework(c *cli.Context, ec *ethclient.Client, handleTransactionFunc net
 		ListenIP:   listenIP,
 	}
 
-	h, err := net.NewHost(netCfg, handleTransactionFunc)
+	cfg := &net.Config{
+		P2pConfig:             netCfg,
+		HandleTransactionFunc: handleTransactionFunc,
+		IsRelayer:             true,
+	}
+
+	h, err := net.NewHost(cfg)
 	if err != nil {
 		return nil, err
 	}
