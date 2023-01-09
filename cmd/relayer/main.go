@@ -191,6 +191,7 @@ func run(c *cli.Context) error {
 		Key:                   key,
 		NewForwardRequestFunc: contracts.NewIForwarderForwardRequest,
 		ValidateTransactionFunc: func(_ *common.SubmitTransactionRequest) error {
+			// Note: an actual application will likely want to set this
 			return nil
 		},
 	}
@@ -226,6 +227,7 @@ func run(c *cli.Context) error {
 	if errors.Is(err, context.Canceled) || errors.Is(err, http.ErrServerClosed) {
 		return nil
 	}
+
 	return err
 }
 
