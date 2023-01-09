@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 
 	net "github.com/athanorlabs/go-p2p-net"
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 const (
@@ -42,25 +43,27 @@ type NetHost interface {
 	ConnectedPeers() []string
 }
 
-type handleTransactionFunc = func(*TransactionRequest) (*TransactionResponse, error)
+// HandleTransactionFunc is implemented by relayer.Relayer.SubmitTransaction
+type HandleTransactionFunc func(*common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error)
 
 // Host represents a p2p node that implements the atomic swap protocol.
 type Host struct {
 	ctx               context.Context
 	h                 NetHost
-	handleTransaction handleTransactionFunc
+	handleTransaction HandleTransactionFunc
 }
 
 // NewHost returns a new Host.
-func NewHost(cfg *net.Config) (*Host, error) {
+func NewHost(cfg *net.Config, handleTransaction HandleTransactionFunc) (*Host, error) {
 	h, err := net.NewHost(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Host{
-		ctx: cfg.Ctx,
-		h:   h,
+		ctx:               cfg.Ctx,
+		h:                 h,
+		handleTransaction: handleTransaction,
 	}, nil
 }
 
@@ -69,6 +72,7 @@ func (h *Host) Start() error {
 	return h.h.Start()
 }
 
+// TODO: maybe call becomeRelayer or something??
 func (h *Host) HandleTransactions() {
 	h.h.SetStreamHandler(transactionID, h.handleTransactionStream)
 	// TODO: also advertise

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 // Message must be implemented by all network messages
@@ -42,11 +44,12 @@ const (
 )
 
 type TransactionRequest struct {
+	*common.SubmitTransactionRequest
 }
 
 // String ...
 func (m *TransactionRequest) String() string {
-	return fmt.Sprintf("TransactionRequest")
+	return fmt.Sprintf("TransactionRequest %v", m.SubmitTransactionRequest)
 }
 
 // Encode ...
@@ -64,11 +67,12 @@ func (r *TransactionRequest) Type() byte {
 }
 
 type TransactionResponse struct {
+	*common.SubmitTransactionResponse
 }
 
 // String ...
 func (m *TransactionResponse) String() string {
-	return fmt.Sprintf("TransactionResponse")
+	return fmt.Sprintf("TransactionResponse %v", m.SubmitTransactionResponse)
 }
 
 // Encode ...

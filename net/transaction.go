@@ -28,12 +28,16 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 		return
 	}
 
-	resp, err := h.handleTransaction(req)
+	resp, err := h.handleTransaction(req.SubmitTransactionRequest)
 	if err != nil {
 		log.Debugf("failed to handle transaction rrequest: %w", err)
 	}
 
-	if err := net.WriteStreamMessage(stream, resp, stream.Conn().RemotePeer()); err != nil {
+	msgResp := &TransactionResponse{
+		SubmitTransactionResponse: resp,
+	}
+
+	if err := net.WriteStreamMessage(stream, msgResp, stream.Conn().RemotePeer()); err != nil {
 		log.Warnf("failed to send TransactionResponse message to peer: %s", err)
 	}
 
