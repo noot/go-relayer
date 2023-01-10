@@ -77,6 +77,11 @@ func NewHost(cfg *Config) (*Host, error) {
 
 // Start starts the bootstrap and discovery process.
 func (h *Host) Start() error {
+	err := h.h.Start()
+	if err != nil {
+		return err
+	}
+
 	if h.isRelayer {
 		// if we're a relayer, we want to handle incoming transaction streams
 		// and advertise that we're a relayer in the DHT.
@@ -84,7 +89,7 @@ func (h *Host) Start() error {
 		h.Advertise()
 	}
 
-	return h.h.Start()
+	return nil
 }
 
 // Stop stops the host.
