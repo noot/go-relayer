@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 
 	p2pnet "github.com/athanorlabs/go-p2p-net"
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 const (
@@ -28,13 +29,16 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 		return
 	}
 
+	var msgResp *TransactionResponse
 	resp, err := h.handleTransaction(req.SubmitTransactionRequest)
 	if err != nil {
-		log.Debugf("failed to handle transaction rrequest: %w", err)
-	}
-
-	msgResp := &TransactionResponse{
-		SubmitTransactionResponse: resp,
+		msgResp = &TransactionResponse{
+			Error: err,
+		}
+	} else {
+		msgResp = &TransactionResponse{
+			SubmitTransactionResponse: resp,
+		}
 	}
 
 	if err := p2pnet.WriteStreamMessage(stream, msgResp, stream.Conn().RemotePeer()); err != nil {
@@ -44,7 +48,7 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 	_ = stream.Close()
 }
 
-func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*TransactionResponse, error) {
+func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*common.SubmitTransactionResponse, error) {
 	ctx, cancel := context.WithTimeout(h.ctx, transactionTimeout)
 	defer cancel()
 
@@ -62,7 +66,16 @@ func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*Transac
 		_ = stream.Close()
 	}()
 
-	return submitTransaction(msg, stream)
+	resp, err := submitTransaction(msg, stream)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error != nil {
+		return nil, fmt.Errorf("received error from remote peer: %w", resp.Error)
+	}
+
+	return resp.SubmitTransactionResponse, nil
 }
 
 func submitTransaction(msg *TransactionRequest, stream libp2pnetwork.Stream) (*TransactionResponse, error) {

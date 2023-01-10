@@ -68,10 +68,15 @@ func (r *TransactionRequest) Type() byte {
 
 type TransactionResponse struct {
 	*common.SubmitTransactionResponse
+	Error error
 }
 
 // String ...
 func (m *TransactionResponse) String() string {
+	if m.Error != nil {
+		return fmt.Sprintf("TransactionResponse %s", m.Error)
+	}
+
 	return fmt.Sprintf("TransactionResponse %v", m.SubmitTransactionResponse)
 }
 
