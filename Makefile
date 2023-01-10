@@ -16,7 +16,7 @@ format:
 
 .PHONY: test
 test:
-	go test -count=1 ./... -v
+	go test -count=1 ./... -v -timeout=2m
 
 .PHONY: clean
 clean:

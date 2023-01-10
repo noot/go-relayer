@@ -82,7 +82,10 @@ func TestMock_Execute(t *testing.T) {
 	require.NoError(t, err)
 	err = conn.SendTransaction(ctx, transferTx)
 	require.NoError(t, err)
-	tests.MineTransaction(t, conn, transferTx)
+	receipt, err = bind.WaitMined(ctx, conn, transferTx)
+	require.NoError(t, err)
+	require.Equal(t, ethtypes.ReceiptStatusSuccessful, receipt.Status)
+	t.Logf("transfer sent: %s", transferTx.Hash())
 
 	// generate ForwardRequest and sign it
 	key := common.NewKeyFromPrivateKey(pk)
@@ -127,6 +130,7 @@ func TestMock_Execute(t *testing.T) {
 	ok, err := contract.Verify(callOpts, *req, sig)
 	require.NoError(t, err)
 	require.True(t, ok)
+	t.Logf("verified forward request")
 
 	// execute withdraw() via forwarder
 	tx, err = contract.Execute(auth, *req, sig)
