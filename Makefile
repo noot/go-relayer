@@ -16,7 +16,7 @@ format:
 
 .PHONY: test
 test:
-	go test -count=1 ./...
+	go test -count=1 ./... -v
 
 .PHONY: clean
 clean:
