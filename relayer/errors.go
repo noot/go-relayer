@@ -6,7 +6,6 @@ import (
 
 var (
 	errMustSetForwarder               = errors.New("must set Forwarder")
-	errMustSetNewForwardRequestFunc   = errors.New("must set NewForwardRequestFunc")
 	errMustSetValidateTransactionFunc = errors.New("must set ValidateTransactionFunc")
 	errMustSetKey                     = errors.New("must set Key")
 	errMustSetEthClient               = errors.New("must set EthClient")

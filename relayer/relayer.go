@@ -32,7 +32,6 @@ type Relayer struct {
 	forwarder               common.Forwarder
 	callOpts                *bind.CallOpts
 	txOpts                  *bind.TransactOpts
-	newForwardRequestFunc   NewForwardRequestFunc
 	validateTransactionFunc ValidateTransactionFunc
 }
 
@@ -42,17 +41,12 @@ type Config struct {
 	EthClient               *ethclient.Client
 	Forwarder               common.Forwarder
 	Key                     *common.Key
-	NewForwardRequestFunc   NewForwardRequestFunc
 	ValidateTransactionFunc ValidateTransactionFunc
 }
 
 func NewRelayer(cfg *Config) (*Relayer, error) {
 	if cfg.Forwarder == nil {
 		return nil, errMustSetForwarder
-	}
-
-	if cfg.NewForwardRequestFunc == nil {
-		return nil, errMustSetNewForwardRequestFunc
 	}
 
 	if cfg.ValidateTransactionFunc == nil {
@@ -88,7 +82,6 @@ func NewRelayer(cfg *Config) (*Relayer, error) {
 		forwarder:               cfg.Forwarder,
 		callOpts:                callOpts,
 		txOpts:                  txOpts,
-		newForwardRequestFunc:   cfg.NewForwardRequestFunc,
 		validateTransactionFunc: cfg.ValidateTransactionFunc,
 	}, nil
 }
@@ -104,7 +97,7 @@ func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*comm
 		return nil, err
 	}
 
-	fwdReq := s.newForwardRequestFunc()
+	fwdReq := s.forwarder.NewEmptyForwardRequest()
 	fwdReq.FromSubmitTransactionRequest(req)
 
 	// verify sig beforehand

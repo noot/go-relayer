@@ -93,6 +93,8 @@ type Forwarder interface {
 		suffixData,
 		signature []byte,
 	) (*types.Transaction, error)
+
+	NewEmptyForwardRequest() ForwardRequest
 }
 
 // ForwardRequest must be implemented by a request type used by a forwarder contract.
