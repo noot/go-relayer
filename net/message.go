@@ -44,7 +44,7 @@ const (
 )
 
 type TransactionRequest struct {
-	*common.SubmitTransactionRequest
+	common.SubmitTransactionRequest
 }
 
 // String ...
@@ -67,8 +67,8 @@ func (r *TransactionRequest) Type() byte {
 }
 
 type TransactionResponse struct {
-	*common.SubmitTransactionResponse
-	Error error
+	common.SubmitTransactionResponse `json:"SubmitTransactionResponse,omitempty"`
+	Error                            error `json:"Error,omitempty"`
 }
 
 // String ...

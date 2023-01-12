@@ -74,7 +74,7 @@ var (
 		},
 		&cli.BoolFlag{
 			Name:  flagWithNetwork,
-			Value: false,
+			Value: true,
 			Usage: "Run the relayer with p2p network capabilities",
 		},
 		&cli.StringFlag{
@@ -91,7 +91,6 @@ var (
 			Name:    flagBootnodes,
 			Aliases: []string{"bn"},
 			Usage:   "libp2p bootnode, comma separated if passing multiple to a single flag",
-			EnvVars: []string{"SWAPD_BOOTNODES"},
 		},
 	}
 
@@ -202,7 +201,7 @@ func run(c *cli.Context) error {
 	}
 
 	if c.Bool(flagWithNetwork) {
-		h, err := setupNework(c, ec, r.SubmitTransaction)
+		h, err := setupNework(c, ec, r)
 		if err != nil {
 			return err
 		}
@@ -231,7 +230,7 @@ func run(c *cli.Context) error {
 	return err
 }
 
-func setupNework(c *cli.Context, ec *ethclient.Client, handleTransactionFunc net.HandleTransactionFunc) (*net.Host, error) {
+func setupNework(c *cli.Context, ec *ethclient.Client, r *relayer.Relayer) (*net.Host, error) {
 	chainID, err := ec.ChainID(context.Background())
 	if err != nil {
 		return nil, err
@@ -254,9 +253,9 @@ func setupNework(c *cli.Context, ec *ethclient.Client, handleTransactionFunc net
 	}
 
 	cfg := &net.Config{
-		P2pConfig:             netCfg,
-		HandleTransactionFunc: handleTransactionFunc,
-		IsRelayer:             true,
+		P2pConfig:            netCfg,
+		TransactionSubmitter: r,
+		IsRelayer:            true,
 	}
 
 	h, err := net.NewHost(cfg)

@@ -10,7 +10,7 @@ import (
 
 func TestTransactionRequest(t *testing.T) {
 	msg := &TransactionRequest{
-		SubmitTransactionRequest: &common.SubmitTransactionRequest{},
+		SubmitTransactionRequest: common.SubmitTransactionRequest{},
 	}
 
 	enc, err := msg.Encode()
@@ -23,7 +23,7 @@ func TestTransactionRequest(t *testing.T) {
 
 func TestTransactionResponse(t *testing.T) {
 	msg := &TransactionResponse{
-		SubmitTransactionResponse: &common.SubmitTransactionResponse{},
+		SubmitTransactionResponse: common.SubmitTransactionResponse{},
 	}
 
 	enc, err := msg.Encode()

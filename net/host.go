@@ -43,21 +43,23 @@ type P2pnetHost interface {
 	ConnectedPeers() []string
 }
 
-// HandleTransactionFunc is implemented by relayer.Relayer.SubmitTransaction
-type HandleTransactionFunc func(*common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error)
+// TransactionSubmitter is implemented by *relayer.Relayer.
+type TransactionSubmitter interface {
+	SubmitTransaction(*common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error)
+}
 
 // Host represents a p2p node that implements the atomic swap protocol.
 type Host struct {
-	ctx               context.Context
-	h                 P2pnetHost
-	handleTransaction HandleTransactionFunc
-	isRelayer         bool
+	ctx         context.Context
+	h           P2pnetHost
+	txSubmitter TransactionSubmitter
+	isRelayer   bool
 }
 
 type Config struct {
-	P2pConfig             *p2pnet.Config
-	HandleTransactionFunc HandleTransactionFunc
-	IsRelayer             bool
+	P2pConfig            *p2pnet.Config
+	TransactionSubmitter TransactionSubmitter
+	IsRelayer            bool
 }
 
 // NewHost returns a new Host.
@@ -68,10 +70,10 @@ func NewHost(cfg *Config) (*Host, error) {
 	}
 
 	return &Host{
-		ctx:               cfg.P2pConfig.Ctx,
-		h:                 h,
-		handleTransaction: cfg.HandleTransactionFunc,
-		isRelayer:         cfg.IsRelayer,
+		ctx:         cfg.P2pConfig.Ctx,
+		h:           h,
+		txSubmitter: cfg.TransactionSubmitter,
+		isRelayer:   cfg.IsRelayer,
 	}, nil
 }
 

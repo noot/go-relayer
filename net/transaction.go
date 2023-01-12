@@ -30,14 +30,14 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 	}
 
 	var msgResp *TransactionResponse
-	resp, err := h.handleTransaction(req.SubmitTransactionRequest)
+	resp, err := h.txSubmitter.SubmitTransaction(&req.SubmitTransactionRequest)
 	if err != nil {
 		msgResp = &TransactionResponse{
 			Error: err,
 		}
 	} else {
 		msgResp = &TransactionResponse{
-			SubmitTransactionResponse: resp,
+			SubmitTransactionResponse: *resp,
 		}
 	}
 
@@ -75,7 +75,7 @@ func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*common.
 		return nil, fmt.Errorf("received error from remote peer: %w", resp.Error)
 	}
 
-	return resp.SubmitTransactionResponse, nil
+	return &resp.SubmitTransactionResponse, nil
 }
 
 func submitTransaction(msg *TransactionRequest, stream libp2pnetwork.Stream) (*TransactionResponse, error) {

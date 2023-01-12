@@ -16,7 +16,7 @@ func TestTransactionMessages(t *testing.T) {
 	require.NoError(t, err)
 
 	msg := &TransactionRequest{
-		SubmitTransactionRequest: &common.SubmitTransactionRequest{},
+		SubmitTransactionRequest: common.SubmitTransactionRequest{},
 	}
 
 	resp, err := ha.SubmitTransaction(hb.PeerID(), msg)
