@@ -58,7 +58,7 @@ type Host struct {
 }
 
 type Config struct {
-	Context context.Context
+	Context              context.Context
 	P2pConfig            *p2pnet.Config
 	TransactionSubmitter TransactionSubmitter
 	IsRelayer            bool

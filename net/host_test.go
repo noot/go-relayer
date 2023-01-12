@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type mockTransactionSubmitter struct {}
+type mockTransactionSubmitter struct{}
 
 func (*mockTransactionSubmitter) SubmitTransaction(_ *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) {
 	return &common.SubmitTransactionResponse{}, nil
@@ -31,9 +31,10 @@ func basicTestConfig(t *testing.T) *Config {
 	}
 
 	return &Config{
-		P2pConfig:             netCfg,
+		Context:              context.Background(),
+		P2pConfig:            netCfg,
 		TransactionSubmitter: new(mockTransactionSubmitter),
-		IsRelayer:             true,
+		IsRelayer:            true,
 	}
 }
 
