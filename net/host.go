@@ -2,6 +2,7 @@ package net
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	logging "github.com/ipfs/go-log"
@@ -57,6 +58,7 @@ type Host struct {
 }
 
 type Config struct {
+	Context context.Context
 	P2pConfig            *p2pnet.Config
 	TransactionSubmitter TransactionSubmitter
 	IsRelayer            bool
@@ -64,17 +66,31 @@ type Config struct {
 
 // NewHost returns a new Host.
 func NewHost(cfg *Config) (*Host, error) {
+	if cfg.P2pConfig == nil {
+		return nil, errors.New("must set P2pConfig")
+	}
+
 	h, err := p2pnet.NewHost(cfg.P2pConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Host{
-		ctx:         cfg.P2pConfig.Ctx,
+		ctx:         cfg.Context,
 		h:           h,
 		txSubmitter: cfg.TransactionSubmitter,
 		isRelayer:   cfg.IsRelayer,
 	}, nil
+}
+
+// NewHostFromP2pHost returns a new Host using the given P2pnetHost.
+func NewHostFromP2pHost(cfg *Config, h P2pnetHost) *Host {
+	return &Host{
+		ctx:         cfg.Context,
+		h:           h,
+		txSubmitter: cfg.TransactionSubmitter,
+		isRelayer:   cfg.IsRelayer,
+	}
 }
 
 // Start starts the bootstrap and discovery process.

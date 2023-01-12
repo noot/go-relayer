@@ -253,6 +253,7 @@ func setupNework(c *cli.Context, ec *ethclient.Client, r *relayer.Relayer) (*net
 	}
 
 	cfg := &net.Config{
+		Context: context.Background(),
 		P2pConfig:            netCfg,
 		TransactionSubmitter: r,
 		IsRelayer:            true,
