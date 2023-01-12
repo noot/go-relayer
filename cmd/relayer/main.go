@@ -184,11 +184,10 @@ func run(c *cli.Context) error {
 	}
 
 	cfg := &relayer.Config{
-		Ctx:                   context.Background(),
-		EthClient:             ec,
-		Forwarder:             contracts.NewIForwarderWrapped(forwarder),
-		Key:                   key,
-		NewForwardRequestFunc: contracts.NewIForwarderForwardRequest,
+		Ctx:       context.Background(),
+		EthClient: ec,
+		Forwarder: contracts.NewIForwarderWrapped(forwarder),
+		Key:       key,
 		ValidateTransactionFunc: func(_ *common.SubmitTransactionRequest) error {
 			// Note: an actual application will likely want to set this
 			return nil

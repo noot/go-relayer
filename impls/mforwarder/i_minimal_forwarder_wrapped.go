@@ -60,3 +60,7 @@ func (f *IMinimalForwarderWrapped) Execute(
 
 	return f.f.Execute(opts, *r, signature)
 }
+
+func (f *IMinimalForwarderWrapped) NewEmptyForwardRequest() common.ForwardRequest {
+	return &IMinimalForwarderForwardRequest{}
+}
