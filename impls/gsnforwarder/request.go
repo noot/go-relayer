@@ -103,7 +103,3 @@ func (r *IForwarderForwardRequest) Pack(suffixData []byte) ([]byte, error) {
 
 	return packed, nil
 }
-
-func NewIForwarderForwardRequest() common.ForwardRequest {
-	return &IForwarderForwardRequest{}
-}

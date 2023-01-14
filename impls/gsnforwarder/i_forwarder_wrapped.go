@@ -65,3 +65,7 @@ func (f *IForwarderWrapped) Execute(
 
 	return f.f.Execute(opts, *r, domainSeparator, requestTypeHash, suffixData, signature)
 }
+
+func (f *IForwarderWrapped) NewEmptyForwardRequest() common.ForwardRequest {
+	return &IForwarderForwardRequest{}
+}

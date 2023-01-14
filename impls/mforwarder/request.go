@@ -82,7 +82,3 @@ func (r *IMinimalForwarderForwardRequest) Pack(_ []byte) ([]byte, error) {
 
 	return packed, nil
 }
-
-func NewIMinimalForwarderForwardRequest() common.ForwardRequest {
-	return &IMinimalForwarderForwardRequest{}
-}
