@@ -59,12 +59,14 @@ func TestServer_Stop(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
+
 	go func() {
 		defer wg.Done()
 		time.Sleep(500 * time.Millisecond) // enough time for the server to fully start
-		err := s.Stop()
+		err := s.Stop()                    //nolint:govet
 		require.NoError(t, err)
 	}()
+
 	err = s.Start()
 	require.ErrorIs(t, err, http.ErrServerClosed)
 	wg.Wait()

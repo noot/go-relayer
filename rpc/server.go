@@ -44,7 +44,7 @@ func NewServer(cfg *Config) (*Server, error) {
 		return nil, err
 	}
 
-	if err := rpcServer.RegisterService(relayService, "relayer"); err != nil {
+	if err = rpcServer.RegisterService(relayService, "relayer"); err != nil {
 		return nil, err
 	}
 

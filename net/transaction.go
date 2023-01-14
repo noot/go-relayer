@@ -48,6 +48,9 @@ func (h *Host) handleTransactionStream(stream libp2pnetwork.Stream) {
 	_ = stream.Close()
 }
 
+// SubmitTransaction attempts to submits a transaction to a given peer, who should be
+// a relayer, for them to submit on our behalf.
+// It returns a SubmitTransactionResponse with the tx hash if successful, error otherwise.
 func (h *Host) SubmitTransaction(who peer.ID, msg *TransactionRequest) (*common.SubmitTransactionResponse, error) {
 	ctx, cancel := context.WithTimeout(h.ctx, transactionTimeout)
 	defer cancel()

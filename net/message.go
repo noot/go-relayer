@@ -39,10 +39,11 @@ func decodeMessage(b []byte) (Message, error) {
 }
 
 const (
-	TransactionRequestType byte = iota
+	TransactionRequestType byte = iota //nolint:revive
 	TransactionResponseType
 )
 
+// TransactionRequest represents a transaction submission request network message.
 type TransactionRequest struct {
 	common.SubmitTransactionRequest
 }
@@ -62,10 +63,12 @@ func (m *TransactionRequest) Encode() ([]byte, error) {
 	return append([]byte{TransactionRequestType}, b...), nil
 }
 
-func (r *TransactionRequest) Type() byte {
+// Type ...
+func (m *TransactionRequest) Type() byte {
 	return TransactionRequestType
 }
 
+// TransactionResponse represents a transaction submission response network message.
 type TransactionResponse struct {
 	common.SubmitTransactionResponse `json:"SubmitTransactionResponse,omitempty"`
 	Error                            error `json:"Error,omitempty"`
@@ -90,6 +93,7 @@ func (m *TransactionResponse) Encode() ([]byte, error) {
 	return append([]byte{TransactionResponseType}, b...), nil
 }
 
-func (r *TransactionResponse) Type() byte {
+// Type ...
+func (m *TransactionResponse) Type() byte {
 	return TransactionResponseType
 }

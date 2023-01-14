@@ -13,11 +13,15 @@ import (
 var _ common.ForwardRequest = &IForwarderForwardRequest{}
 
 var (
-	DefaultName            = "Forwarder"
+	DefaultName            = "Forwarder" //nolint:revive
 	DefaultVersion         = "0.0.1"
-	ForwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"))
+	ForwardRequestTypehash = crypto.Keccak256Hash(
+		[]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"), //nolint:lll
+	)
 )
 
+// FromSubmitTransactionRequest returns a new SubmitTransactionRequest from the
+// given IForwarderForwardRequest.
 func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
 	req *common.SubmitTransactionRequest,
 ) {
@@ -30,6 +34,9 @@ func (r *IForwarderForwardRequest) FromSubmitTransactionRequest(
 	r.ValidUntilTime = req.ValidUntilTime
 }
 
+// Pack packs the IForwarderForwardRequest data into an ABI-encoded format.
+// It optionally includes the given suffixData.
+// NOTE: suffixData is currently unused.
 func (r *IForwarderForwardRequest) Pack(suffixData []byte) ([]byte, error) {
 	uint256Ty, err := abi.NewType("uint256", "", nil)
 	if err != nil {

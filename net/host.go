@@ -57,6 +57,7 @@ type Host struct {
 	isRelayer   bool
 }
 
+// Config contains config values for a Host.
 type Config struct {
 	Context              context.Context
 	P2pConfig            *p2pnet.Config

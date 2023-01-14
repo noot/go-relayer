@@ -200,7 +200,7 @@ func run(c *cli.Context) error {
 	}
 
 	if c.Bool(flagWithNetwork) {
-		h, err := setupNework(c, ec, r)
+		h, err := setupNework(c, ec, r) //nolint:govet
 		if err != nil {
 			return err
 		}

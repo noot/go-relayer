@@ -15,20 +15,24 @@ var _ common.Forwarder = &IForwarderWrapped{}
 
 var errInvalidForwardRequestType = errors.New("invalid ForwardRequest type")
 
+// IForwarderWrapped represents a wrapped GSN IForwarder.
 type IForwarderWrapped struct {
 	f *IForwarder
 }
 
+// NewIForwarderWrapped returns a new IForwarderWrapped.
 func NewIForwarderWrapped(f *IForwarder) *IForwarderWrapped {
 	return &IForwarderWrapped{
 		f: f,
 	}
 }
 
+// GetNonce returns an account's nonce from the forwarder contract.
 func (f *IForwarderWrapped) GetNonce(opts *bind.CallOpts, from ethcommon.Address) (*big.Int, error) {
 	return f.f.GetNonce(opts, from)
 }
 
+// Verify verifies a forward request using the forwarder contract.
 func (f *IForwarderWrapped) Verify(
 	opts *bind.CallOpts,
 	req common.ForwardRequest,
@@ -50,6 +54,7 @@ func (f *IForwarderWrapped) Verify(
 	return true, nil
 }
 
+// Execute executes a forward request using the forwarder contract.
 func (f *IForwarderWrapped) Execute(
 	opts *bind.TransactOpts,
 	req common.ForwardRequest,
@@ -66,6 +71,7 @@ func (f *IForwarderWrapped) Execute(
 	return f.f.Execute(opts, *r, domainSeparator, requestTypeHash, suffixData, signature)
 }
 
+// NewEmptyForwardRequest returns a new empty *IForwarderForwardRequest.
 func (f *IForwarderWrapped) NewEmptyForwardRequest() common.ForwardRequest {
 	return &IForwarderForwardRequest{}
 }

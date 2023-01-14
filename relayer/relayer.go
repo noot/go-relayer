@@ -44,6 +44,7 @@ type Config struct {
 	ValidateTransactionFunc ValidateTransactionFunc
 }
 
+// NewRelayer returns a new Relayer.
 func NewRelayer(cfg *Config) (*Relayer, error) {
 	if cfg.Forwarder == nil {
 		return nil, errMustSetForwarder
@@ -86,6 +87,7 @@ func NewRelayer(cfg *Config) (*Relayer, error) {
 	}, nil
 }
 
+// SubmitTransaction attempts to have the relayer submit the given transaction.
 func (s *Relayer) SubmitTransaction(req *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) {
 	err := validateRequest(req)
 	if err != nil {
