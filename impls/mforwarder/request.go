@@ -12,9 +12,13 @@ import (
 var _ common.ForwardRequest = &IMinimalForwarderForwardRequest{}
 
 var (
-	forwardRequestTypehash = crypto.Keccak256Hash([]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data)"))
+	forwardRequestTypehash = crypto.Keccak256Hash(
+		[]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data)"),
+	)
 )
 
+// FromSubmitTransactionRequest returns a new SubmitTransactionRequest from the
+// given IMinimalForwarderForwardRequest.
 func (r *IMinimalForwarderForwardRequest) FromSubmitTransactionRequest(
 	req *common.SubmitTransactionRequest,
 ) {
@@ -26,6 +30,7 @@ func (r *IMinimalForwarderForwardRequest) FromSubmitTransactionRequest(
 	r.Data = req.Data
 }
 
+// Pack packs the IForwarderForwardRequest data into an ABI-encoded format.
 func (r *IMinimalForwarderForwardRequest) Pack(_ []byte) ([]byte, error) {
 	uint256Ty, err := abi.NewType("uint256", "", nil)
 	if err != nil {

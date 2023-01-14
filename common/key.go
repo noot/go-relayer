@@ -48,6 +48,7 @@ func NewKeyFromPrivateKeyString(pk string) (*Key, error) {
 	}, nil
 }
 
+// NewKeyFromPrivateKey returns a new *Key from the given private key.
 func NewKeyFromPrivateKey(priv *ecdsa.PrivateKey) *Key {
 	return &Key{
 		priv:    priv,
@@ -73,6 +74,7 @@ func (k *Key) Address() ethcommon.Address {
 	return k.address
 }
 
+// PrivateKey returns the key's private key.
 func (k *Key) PrivateKey() *ecdsa.PrivateKey {
 	return k.priv
 }

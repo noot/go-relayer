@@ -13,7 +13,7 @@ import (
 
 type mockTransactionSubmitter struct{}
 
-func (*mockTransactionSubmitter) SubmitTransaction(_ *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) {
+func (*mockTransactionSubmitter) SubmitTransaction(_ *common.SubmitTransactionRequest) (*common.SubmitTransactionResponse, error) { //nolint:lll
 	return &common.SubmitTransactionResponse{}, nil
 }
 

@@ -56,7 +56,9 @@ func GetEIP712DomainSeparator(
 		return [32]byte{}, fmt.Errorf("failed to create address type: %w", err)
 	}
 
-	eip712DomainHash := crypto.Keccak256Hash([]byte("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"))
+	eip712DomainHash := crypto.Keccak256Hash(
+		[]byte("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+	)
 	var chainIDArr [32]byte
 	copy(chainIDArr[:], padBytesLeft(chainID.Bytes(), 32))
 

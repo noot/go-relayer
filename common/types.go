@@ -8,6 +8,9 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
+// SubmitTransactionRequest represents a request for a relayer to submit a transaction
+// on the sender's behalf.
+// It contains all the necessary info for the relayer to construct a forward request.
 type SubmitTransactionRequest struct {
 	From      ethcommon.Address `json:"from"`
 	To        ethcommon.Address `json:"to"`
@@ -25,10 +28,14 @@ type SubmitTransactionRequest struct {
 	SuffixData      []byte   `json:"suffixData,omitempty"`
 }
 
+// SubmitTransactionResponse is returned by a relayer upon successful transaction
+// submission. It contains the transaction hash.
 type SubmitTransactionResponse struct {
 	TxHash ethcommon.Hash `json:"transactionHash"`
 }
 
+// NewMinimalSubmitTransactionRequest returns a SubmitTransactionRequest containing all the
+// information needed for a MinimalForwarder forward request.
 func NewMinimalSubmitTransactionRequest(
 	from, to ethcommon.Address,
 	value, gas, nonce *big.Int,
@@ -45,6 +52,8 @@ func NewMinimalSubmitTransactionRequest(
 	}
 }
 
+// NewGSNSubmitTransactionRequest returns a SubmitTransactionRequest containing all the
+// information needed for a GSN Forwarder forward request.
 func NewGSNSubmitTransactionRequest(
 	from, to ethcommon.Address,
 	value, gas, nonce *big.Int,
