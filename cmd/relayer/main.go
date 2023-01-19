@@ -184,7 +184,7 @@ func run(c *cli.Context) error {
 	}
 
 	cfg := &relayer.Config{
-		Ctx:       context.Background(),
+		Ctx:       ctx,
 		EthClient: ec,
 		Forwarder: contracts.NewIForwarderWrapped(forwarder),
 		Key:       key,
@@ -200,7 +200,7 @@ func run(c *cli.Context) error {
 	}
 
 	if c.Bool(flagWithNetwork) {
-		h, err := setupNework(c, ec, r) //nolint:govet
+		h, err := setupNetwork(ctx, c, ec, r) //nolint:govet
 		if err != nil {
 			return err
 		}
@@ -229,8 +229,13 @@ func run(c *cli.Context) error {
 	return err
 }
 
-func setupNework(c *cli.Context, ec *ethclient.Client, r *relayer.Relayer) (*net.Host, error) {
-	chainID, err := ec.ChainID(context.Background())
+func setupNetwork(
+	ctx context.Context,
+	c *cli.Context,
+	ec *ethclient.Client,
+	r *relayer.Relayer,
+) (*net.Host, error) {
+	chainID, err := ec.ChainID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +247,7 @@ func setupNework(c *cli.Context, ec *ethclient.Client, r *relayer.Relayer) (*net
 
 	listenIP := "0.0.0.0"
 	netCfg := &p2pnet.Config{
-		Ctx:        context.Background(),
+		Ctx:        ctx,
 		DataDir:    os.TempDir(),
 		Port:       uint16(c.Uint(flagLibp2pPort)),
 		KeyFile:    c.String(flagLibp2pKey),
@@ -252,7 +257,7 @@ func setupNework(c *cli.Context, ec *ethclient.Client, r *relayer.Relayer) (*net
 	}
 
 	cfg := &net.Config{
-		Context:              context.Background(),
+		Context:              ctx,
 		P2pConfig:            netCfg,
 		TransactionSubmitter: r,
 		IsRelayer:            true,
