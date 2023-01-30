@@ -121,7 +121,7 @@ func (h *Host) Advertise() {
 	h.h.Advertise([]string{advertisedRelayerStr})
 }
 
-// Discover searches the DHT for peers that advertise that they provide the given coin..
+// Discover searches the DHT for peers that advertise that they provide the given string.
 // It searches for up to `searchTime` duration of time.
 func (h *Host) Discover(searchTime time.Duration) ([]peer.ID, error) {
 	return h.h.Discover(advertisedRelayerStr, searchTime)
