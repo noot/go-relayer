@@ -3,7 +3,7 @@ module github.com/athanorlabs/go-relayer
 go 1.19
 
 require (
-	github.com/athanorlabs/go-p2p-net v0.0.0-20230109212235-d22ff2447282
+	github.com/athanorlabs/go-p2p-net v0.0.0-20230126054330-40336771ef86
 	github.com/ethereum/go-ethereum v1.10.23
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
