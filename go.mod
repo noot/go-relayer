@@ -3,13 +3,14 @@ module github.com/athanorlabs/go-relayer
 go 1.20
 
 require (
-	github.com/athanorlabs/go-p2p-net v0.2.0
+	github.com/athanorlabs/go-p2p-net v0.0.0-20230126054330-40336771ef86
 	github.com/ethereum/go-ethereum v1.11.6
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/rpc v1.2.0
 	github.com/ipfs/go-log v1.0.5
 	github.com/libp2p/go-libp2p v0.27.1
+	github.com/multiformats/go-multiaddr v0.9.0
 	github.com/stretchr/testify v1.8.2
 	github.com/urfave/cli/v2 v2.25.1
 )
@@ -95,7 +96,6 @@ require (
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
 	github.com/multiformats/go-base36 v0.2.0 // indirect
-	github.com/multiformats/go-multiaddr v0.9.0 // indirect
 	github.com/multiformats/go-multiaddr-dns v0.3.1 // indirect
 	github.com/multiformats/go-multiaddr-fmt v0.1.0 // indirect
 	github.com/multiformats/go-multibase v0.2.0 // indirect
