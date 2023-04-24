@@ -31,12 +31,6 @@ set -x
 	--type Forwarder \
 	--out forwarder.go
 
-"${SOLC_EXEC[@]}" --abi contracts/IForwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_EXEC[@]}" --bin contracts/IForwarder.sol -o contracts/bin/ --overwrite
-
-"${ABIGEN}" \
-	--abi contracts/abi/IForwarder.abi \
-	--bin contracts/bin/IForwarder.bin \
-	--pkg ${PKG_NAME} \
-	--type IForwarder \
-	--out i_forwarder.go
+# IForwarderForwardRequest gets generated in both forwarder.go and i_forwarder.go
+# with an identical definition.
+sed -i 's/^type IForwarderForwardRequest /type _duplicate_IForwarderForwardRequest /' forwarder.go

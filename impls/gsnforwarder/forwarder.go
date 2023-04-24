@@ -30,7 +30,7 @@ var (
 )
 
 // IForwarderForwardRequest is an auto generated low-level Go binding around an user-defined struct.
-type IForwarderForwardRequest struct {
+type _duplicate_IForwarderForwardRequest struct {
 	From           common.Address
 	To             common.Address
 	Value          *big.Int
