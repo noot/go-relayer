@@ -1,29 +1,38 @@
 #!/bin/bash
 
-# Use the project root (one directory above this script) as the current working directory:
-PROJECT_ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
-cd "${PROJECT_ROOT}" || exit 1
+# Change to the gsnforwarder dir, one directory up from this script
+GSNFORWARDER_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+cd "${GSNFORWARDER_DIR}" || exit 1
 
 ABIGEN="$(go env GOPATH)/bin/abigen"
 
 PKG_NAME="gsnforwarder"
 
-if [[ -z "${SOLC_BIN}" ]]; then
-	SOLC_BIN=solc
-fi
+# We need the solc version to match the contract deployed here:
+# https://docs.opengsn.org/networks/ethereum/mainnet.html
+# https://etherscan.io/address/0xB2b5841DBeF766d4b521221732F9B618fCf34A87#code
+SOLC_VERSION="0.8.7"
 
-"${SOLC_BIN}" --abi contracts/Forwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/Forwarder.sol -o contracts/bin/ --overwrite
+SOLC_EXEC=(
+		docker run --rm \
+		--volume "${GSNFORWARDER_DIR}/contracts:/contracts" \
+		-u "$(id -u):$(id -g)" \
+		"ethereum/solc:${SOLC_VERSION}"
+	)
+
+set -x
+"${SOLC_EXEC[@]}" --abi contracts/Forwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_EXEC[@]}"  --bin contracts/Forwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/Forwarder.abi \
 	--bin contracts/bin/Forwarder.bin \
 	--pkg ${PKG_NAME} \
 	--type Forwarder \
-	--out tmp_forwarder.go
+	--out forwarder.go
 
-"${SOLC_BIN}" --abi contracts/IForwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_BIN}" --bin contracts/IForwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_EXEC[@]}" --abi contracts/IForwarder.sol -o contracts/abi/ --overwrite
+"${SOLC_EXEC[@]}" --bin contracts/IForwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/IForwarder.abi \
@@ -31,6 +40,3 @@ fi
 	--pkg ${PKG_NAME} \
 	--type IForwarder \
 	--out i_forwarder.go
-
-sed '31,41d' tmp_forwarder.go > forwarder.go
-rm tmp_forwarder.go

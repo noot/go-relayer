@@ -1,4 +1,5 @@
-/bin/
-/contracts/abi
-/contracts/bin
-eth.key
+/bin
+/eth.key
+/examples/mock_recipient/contracts/bin
+/impls/gsnforwarder/contracts/bin
+/impls/mforwarder/contracts/bin
