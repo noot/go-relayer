@@ -82,7 +82,7 @@ func NewServer(cfg *Config) (*Server, error) {
 }
 
 // HttpURL returns the URL used for HTTP requests
-func (s *Server) HttpURL() string { //nolint:revive
+func (s *Server) HttpURL() string {
 	return fmt.Sprintf("http://%s", s.httpServer.Addr)
 }
 

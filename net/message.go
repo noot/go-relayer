@@ -39,7 +39,7 @@ func decodeMessage(b []byte) (Message, error) {
 }
 
 const (
-	TransactionRequestType byte = iota //nolint:revive
+	TransactionRequestType byte = iota
 	TransactionResponseType
 )
 
