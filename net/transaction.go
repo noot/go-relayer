@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 
 	p2pnet "github.com/athanorlabs/go-p2p-net"
+
 	"github.com/athanorlabs/go-relayer/common"
 )
 

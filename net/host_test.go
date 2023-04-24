@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	p2pnet "github.com/athanorlabs/go-p2p-net"
-	"github.com/athanorlabs/go-relayer/common"
-
 	"github.com/stretchr/testify/require"
+
+	"github.com/athanorlabs/go-relayer/common"
 )
 
 type mockTransactionSubmitter struct{}

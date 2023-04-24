@@ -16,6 +16,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	p2pnet "github.com/athanorlabs/go-p2p-net"
+
 	"github.com/athanorlabs/go-relayer/common"
 	contracts "github.com/athanorlabs/go-relayer/impls/gsnforwarder"
 	"github.com/athanorlabs/go-relayer/net"

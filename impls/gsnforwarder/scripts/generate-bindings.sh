@@ -22,7 +22,7 @@ SOLC_EXEC=(
 
 set -x
 "${SOLC_EXEC[@]}" --abi contracts/Forwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_EXEC[@]}"  --bin contracts/Forwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_EXEC[@]}" --bin contracts/Forwarder.sol -o contracts/bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/Forwarder.abi \

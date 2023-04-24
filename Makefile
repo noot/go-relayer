@@ -12,7 +12,9 @@ lint:
 
 .PHONY: format
 format:
-	go fmt ./...
+	test -x $(GOPATH)/bin/goimports || go install golang.org/x/tools/cmd/goimports@latest
+	$(GOPATH)/bin/goimports -local github.com/athanorlabs/go-relayer -w .
+
 
 .PHONY: test
 test:
