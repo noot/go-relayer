@@ -8,21 +8,26 @@ ABIGEN="$(go env GOPATH)/bin/abigen"
 
 PKG_NAME="gsnforwarder"
 
+rm -rf contracts/abi contracts/bin
+
 # We need the solc version to match the contract deployed here:
 # https://docs.opengsn.org/networks/ethereum/mainnet.html
 # https://etherscan.io/address/0xB2b5841DBeF766d4b521221732F9B618fCf34A87#code
 SOLC_VERSION="0.8.7"
 
 SOLC_EXEC=(
-		docker run --rm \
-		--volume "${GSNFORWARDER_DIR}/contracts:/contracts" \
-		-u "$(id -u):$(id -g)" \
-		"ethereum/solc:${SOLC_VERSION}"
-	)
+	docker run --rm
+	--volume "${GSNFORWARDER_DIR}/contracts:/contracts"
+	--workdir /contracts
+	-u "$(id -u):$(id -g)"
+	"ethereum/solc:${SOLC_VERSION}"
+)
+
+SOLC_EXEC+=(--allow-paths . --optimize)
 
 set -x
-"${SOLC_EXEC[@]}" --abi contracts/Forwarder.sol -o contracts/abi/ --overwrite
-"${SOLC_EXEC[@]}" --bin contracts/Forwarder.sol -o contracts/bin/ --overwrite
+"${SOLC_EXEC[@]}" --abi forwarder/Forwarder.sol -o abi/ --overwrite
+"${SOLC_EXEC[@]}" --bin forwarder/Forwarder.sol -o bin/ --overwrite
 
 "${ABIGEN}" \
 	--abi contracts/abi/Forwarder.abi \
