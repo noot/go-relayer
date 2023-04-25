@@ -46,6 +46,7 @@ func TestCheckForwarderContractCode_fail(t *testing.T) {
 	// bytes don't match
 	code[5]++
 	err = checkContractBytes(code)
+	require.ErrorIs(t, err, errInvalidForwarderContract)
 
 	// too long
 	err = checkContractBytes(make([]byte, 2048))
