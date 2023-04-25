@@ -26,36 +26,32 @@ var ganachePrivateKeys = []string{
 	"646f1ce2fdad0e6deeeb5c7e8e5543bdde65e86029e2fd9fc169899c440a7913",
 }
 
-func setupAuth(t *testing.T) (*bind.TransactOpts, *ethclient.Client, *ecdsa.PrivateKey) {
-	ec, err := ethclient.Dial(common.DefaultEthEndpoint)
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		ec.Close()
-	})
+func newTxOpts(t *testing.T, ec *ethclient.Client, pk *ecdsa.PrivateKey) *bind.TransactOpts {
 	chainID, err := ec.ChainID(context.Background())
 	require.NoError(t, err)
 
-	pk, err := ethcrypto.HexToECDSA(ganachePrivateKeys[0])
+	txOpts, err := bind.NewKeyedTransactorWithChainID(pk, chainID)
 	require.NoError(t, err)
 
-	auth, err := bind.NewKeyedTransactorWithChainID(pk, chainID)
-	require.NoError(t, err)
-	return auth, ec, pk
+	return txOpts
 }
 
 func TestMock_Execute(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	auth, conn, pk := setupAuth(t)
-	chainID, err := conn.ChainID(ctx)
+	pk, err := ethcrypto.HexToECDSA(ganachePrivateKeys[0])
 	require.NoError(t, err)
 
+	conn, chainID := tests.NewEthClient(t)
+
+	auth := newTxOpts(t, conn, pk)
 	address, tx, contract, err := mforwarder.DeployMinimalForwarder(auth, conn)
 	require.NoError(t, err)
 	receipt := tests.MineTransaction(t, conn, tx)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
+	auth = newTxOpts(t, conn, pk)
 	mockAddress, mockTx, _, err := DeployMock(auth, conn, address)
 	require.NoError(t, err)
 	receipt = tests.MineTransaction(t, conn, mockTx)
@@ -133,6 +129,7 @@ func TestMock_Execute(t *testing.T) {
 	t.Logf("verified forward request")
 
 	// execute withdraw() via forwarder
+	auth = newTxOpts(t, conn, pk)
 	tx, err = contract.Execute(auth, *req, sig)
 	require.NoError(t, err)
 	receipt = tests.MineTransaction(t, conn, tx)
