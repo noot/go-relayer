@@ -4,15 +4,12 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"math/big"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/require"
 
 	"github.com/athanorlabs/go-relayer/common"
@@ -26,16 +23,6 @@ var ganachePrivateKeys = []string{
 	"646f1ce2fdad0e6deeeb5c7e8e5543bdde65e86029e2fd9fc169899c440a7913",
 }
 
-func newTxOpts(t *testing.T, ec *ethclient.Client, pk *ecdsa.PrivateKey) *bind.TransactOpts {
-	chainID, err := ec.ChainID(context.Background())
-	require.NoError(t, err)
-
-	txOpts, err := bind.NewKeyedTransactorWithChainID(pk, chainID)
-	require.NoError(t, err)
-
-	return txOpts
-}
-
 func TestMock_Execute(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
@@ -43,51 +30,57 @@ func TestMock_Execute(t *testing.T) {
 	pk, err := ethcrypto.HexToECDSA(ganachePrivateKeys[0])
 	require.NoError(t, err)
 
-	conn, chainID := tests.NewEthClient(t)
+	ec, chainID := tests.NewEthClient(t)
 
-	auth := newTxOpts(t, conn, pk)
-	address, tx, contract, err := mforwarder.DeployMinimalForwarder(auth, conn)
+	txOpts := tests.NewTXOpts(t, ec, pk)
+	address, tx, contract, err := mforwarder.DeployMinimalForwarder(txOpts, ec)
 	require.NoError(t, err)
-	receipt := tests.MineTransaction(t, conn, tx)
+	receipt := tests.MineTransaction(t, ec, tx)
 	t.Logf("gas cost to deploy MinimalForwarder.sol: %d", receipt.GasUsed)
 
-	auth = newTxOpts(t, conn, pk)
-	mockAddress, mockTx, _, err := DeployMock(auth, conn, address)
+	txOpts = tests.NewTXOpts(t, ec, pk)
+	mockAddress, mockTx, _, err := DeployMock(txOpts, ec, address)
 	require.NoError(t, err)
-	receipt = tests.MineTransaction(t, conn, mockTx)
+	receipt = tests.MineTransaction(t, ec, mockTx)
 	t.Logf("gas cost to deploy Mock.sol: %d", receipt.GasUsed)
 
 	// transfer to Mock.sol
 	value := big.NewInt(1000000)
 	fee := big.NewInt(10000)
 
-	gasPrice, err := conn.SuggestGasPrice(ctx)
+	gasPrice, err := ec.SuggestGasPrice(ctx)
 	require.NoError(t, err)
 	t.Logf("suggested gas price: %d", gasPrice)
 
-	transferTx := ethtypes.NewTransaction(
-		0,
-		mockAddress,
-		value,
-		100000,
-		gasPrice,
-		nil,
-	)
+	fromAddress := ethcrypto.PubkeyToAddress(*pk.Public().(*ecdsa.PublicKey))
+	nonce, err := ec.PendingNonceAt(ctx, fromAddress)
+	require.NoError(t, err)
 
+	transferTx := ethtypes.NewTx(&ethtypes.LegacyTx{
+		Nonce:    nonce,
+		To:       &mockAddress,
+		Value:    value,
+		Gas:      100000,
+		GasPrice: gasPrice,
+	})
 	transferTx, err = ethtypes.SignTx(transferTx, ethtypes.LatestSignerForChainID(chainID), pk)
 	require.NoError(t, err)
-	err = conn.SendTransaction(ctx, transferTx)
+
+	err = ec.SendTransaction(ctx, transferTx)
 	require.NoError(t, err)
-	receipt, err = bind.WaitMined(ctx, conn, transferTx)
+
+	receipt, err = bind.WaitMined(ctx, ec, transferTx)
 	require.NoError(t, err)
+
 	require.Equal(t, ethtypes.ReceiptStatusSuccessful, receipt.Status)
 	t.Logf("transfer sent: %s", transferTx.Hash())
 
 	// generate ForwardRequest and sign it
 	key := common.NewKeyFromPrivateKey(pk)
 
-	abi, err := abi.JSON(strings.NewReader(MockABI))
+	abi, err := MockMetaData.GetAbi()
 	require.NoError(t, err)
+
 	calldata, err := abi.Pack("withdraw", value, fee)
 	require.NoError(t, err)
 
@@ -129,16 +122,17 @@ func TestMock_Execute(t *testing.T) {
 	t.Logf("verified forward request")
 
 	// execute withdraw() via forwarder
-	auth = newTxOpts(t, conn, pk)
-	tx, err = contract.Execute(auth, *req, sig)
+	txOpts = tests.NewTXOpts(t, ec, pk)
+	tx, err = contract.Execute(txOpts, *req, sig)
 	require.NoError(t, err)
-	receipt = tests.MineTransaction(t, conn, tx)
+
+	receipt = tests.MineTransaction(t, ec, tx)
 	t.Logf("gas cost to call Mock.withdraw() via MinimalForwarder.execute(): %d", receipt.GasUsed)
 	require.Equal(t, uint64(1), receipt.Status)
 	require.Equal(t, 1, len(receipt.Logs))
 
 	// check that transfer worked
-	mockBalance, err := conn.BalanceAt(ctx, mockAddress, nil)
+	mockBalance, err := ec.BalanceAt(ctx, mockAddress, nil)
 	require.NoError(t, err)
 	require.Equal(t, int64(0), mockBalance.Int64())
 }
