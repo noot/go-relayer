@@ -7,10 +7,10 @@
 ### Solidity Code We Used
 The github repo doesn't contain what's needed to create a byte-compatible
 contract to what is deployed. We used etherscan's API's to download the source
-solidity files validated by them Note: etherscan ony does partial validation
-that does not include the metadata, so the actual source code used may differ
-some if it generates the same byte code.
+solidity files validated by them. Note that etherscan only does partial
+validation which does not include the metadata, so the actual source code used
+may differ some, but it will generated the same byte code.
 
 We built with the same solidity compiler (0.8.7), same optimization flags, and
-same file paths and were able to get identical byte codes minus the contract
+same file paths and were able to get identical byte code except for the contract
 metadata at the end.
