@@ -8,11 +8,13 @@ build:
 .PHONY: lint
 lint:
 	bash scripts/install-lint.sh
-	${GOPATH}/bin/golangci-lint run --timeout 2m
+	${GOPATH}/bin/golangci-lint run --timeout 5m
 
 .PHONY: format
 format:
-	go fmt ./...
+	test -x $(GOPATH)/bin/goimports || go install golang.org/x/tools/cmd/goimports@latest
+	$(GOPATH)/bin/goimports -local github.com/athanorlabs/go-relayer -w .
+
 
 .PHONY: test
 test:

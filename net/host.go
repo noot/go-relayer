@@ -5,12 +5,12 @@ import (
 	"errors"
 	"time"
 
+	p2pnet "github.com/athanorlabs/go-p2p-net"
 	logging "github.com/ipfs/go-log"
 	libp2pnetwork "github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 
-	p2pnet "github.com/athanorlabs/go-p2p-net"
 	"github.com/athanorlabs/go-relayer/common"
 )
 

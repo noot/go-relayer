@@ -1,11 +1,12 @@
-
-// solhint-disable not-rely-on-time
-// SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 pragma abicoder v2;
 
-import "./external/ECDSA.sol";
-import "./ERC165.sol";
+// solhint-disable not-rely-on-time
+// SPDX-License-Identifier: GPL-3.0-only
+
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+
 import "./IForwarder.sol";
 
 /**

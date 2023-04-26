@@ -13,7 +13,7 @@ import (
 var _ common.ForwardRequest = &IForwarderForwardRequest{}
 
 var (
-	DefaultName            = "Forwarder" //nolint:revive
+	DefaultName            = "Forwarder"
 	DefaultVersion         = "0.0.1"
 	ForwardRequestTypehash = crypto.Keccak256Hash(
 		[]byte("ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data,uint256 validUntilTime)"), //nolint:lll

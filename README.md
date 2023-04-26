@@ -15,7 +15,7 @@ Components:
 
 ## Requirements
 
-- go 1.19+
+- go 1.20+
 - abigen: can install using `./scripts/install-abigen.sh`
 
 ## Usage
